@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+@theme {
+  --color-anthracite: #1C1C1E;
+  --color-ivory: #F5F0E8;
+  --color-terracotta: #C4622D;
+  --color-cream: #FAFAF7;
+  --color-terracotta-dark: #A8511F;
+  --color-terracotta-light: #D4784A;
+
+  --font-syne: "Syne", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.stagger-1 { transition-delay: 0.08s; }
+.stagger-2 { transition-delay: 0.16s; }
+.stagger-3 { transition-delay: 0.24s; }
+.stagger-4 { transition-delay: 0.32s; }
+.stagger-5 { transition-delay: 0.4s; }
+
+/* ===== HERO ENTRANCE ===== */
+@keyframes heroSlideUp {
+  from { opacity: 0; transform: translateY(60px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes heroLine {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.hero-title {
+  animation: heroSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-subtitle {
+  opacity: 0;
+  animation: heroSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+.hero-cta {
+  opacity: 0;
+  animation: heroSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+.hero-line {
+  transform-origin: left;
+  animation: heroLine 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  transform: scaleX(0);
+}
+.hero-badge {
+  opacity: 0;
+  animation: heroFadeIn 0.8s ease 0.8s forwards;
+}
+
+/* ===== MARQUEE ===== */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ===== SPINNING WHEEL ===== */
+.wheel-spin {
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+/* ===== PARALLAX ===== */
+.parallax-slow {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* ===== COUNTER ===== */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== MAGNETIC BUTTON ===== */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.magnetic-btn:hover {
+  transform: scale(1.02);
+}
+.magnetic-btn::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, var(--color-terracotta), var(--color-terracotta-dark));
+  z-index: -1;
+  filter: blur(12px);
+}
+.magnetic-btn:hover::after {
+  opacity: 0.4;
+}
+
+/* ===== TEXT HIGHLIGHT ===== */
+.text-highlight {
+  color: var(--color-terracotta);
+  font-weight: 700;
+}
+.text-highlight-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--color-terracotta);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+/* ===== SMOOTH SCROLL ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu-enter {
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-menu-enter.open {
+  transform: translateX(0);
+}
+
+/* ===== HORIZONTAL LINE ANIMATION ===== */
+.line-grow {
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.line-grow.visible {
+  width: 80px;
+}
+
+/* ===== REVIEW CAROUSEL ===== */
+@keyframes slideReviews {
+  0%, 20% { transform: translateX(0); }
+  25%, 45% { transform: translateX(-100%); }
+  50%, 70% { transform: translateX(-200%); }
+  75%, 95% { transform: translateX(-300%); }
+  100% { transform: translateX(0); }
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background: var(--color-terracotta);
+  color: white;
+}
