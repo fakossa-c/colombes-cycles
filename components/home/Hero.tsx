@@ -37,7 +37,7 @@ export default function Hero() {
     <section
       ref={ref}
       id="hero"
-      className="relative bg-anthracite text-white overflow-hidden min-h-[100vh] flex items-center"
+      className="relative bg-anthracite text-white overflow-hidden min-h-[100svh] flex items-end md:items-center"
     >
       {/* Subtle grid */}
       <div
@@ -59,11 +59,11 @@ export default function Hero() {
       </div>
 
       <div
-        className="relative max-w-7xl mx-auto px-6 md:px-10 py-32 md:py-40 lg:py-48 w-full"
+        className="relative max-w-7xl mx-auto px-6 md:px-10 py-20 md:py-40 lg:py-48 w-full"
         style={{ opacity: "var(--hero-fade, 1)" }}
       >
         {/* Top badge */}
-        <div className="hero-badge flex items-center gap-3 mb-10">
+        <div className="hero-badge flex items-center gap-3 mb-6 md:mb-10">
           <div className="w-10 h-[1px] bg-terracotta" />
           <span className="text-[0.7rem] font-semibold tracking-[0.25em] uppercase text-white/50">
             Atelier de cycles · Colombes 92
