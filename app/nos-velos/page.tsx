@@ -74,7 +74,7 @@ export default function NosVelos() {
 
       <CtaBlock
         title="Vous ne savez pas encore par où commencer ?"
-        subtitle="Venez, on regarde ensemble."
+        subtitle="Passez en boutique, on regarde ensemble."
         ctaText="Prendre rendez-vous en boutique"
         ctaHref="/contact"
       />

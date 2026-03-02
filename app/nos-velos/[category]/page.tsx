@@ -148,7 +148,7 @@ export default async function CategoryPage({ params }: Props) {
 
       <CtaBlock
         title="Vous ne savez pas encore par où commencer ?"
-        subtitle="Venez, on regarde ensemble."
+        subtitle="Passez en boutique, on regarde ensemble."
         ctaText="Prendre rendez-vous en boutique"
         ctaHref="/contact"
       />

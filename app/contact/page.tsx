@@ -22,8 +22,8 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        title="On est là. Venez ou appelez."
-        subtitle="Une question sur un vélo, une réparation à planifier, un conseil avant d'acheter. C'est pour ça qu'on est là. Pas de formulaire inutile : on répond vraiment."
+        title="Écrivez-nous, appelez-nous ou passez nous voir."
+        subtitle="Une question sur un vélo, une réparation à planifier, un conseil avant d'acheter. On répond vraiment."
         tag="Contact"
         breadcrumbs={[
           { label: "Accueil", href: "/" },
@@ -32,7 +32,7 @@ export default function ContactPage() {
       />
 
       {/* Formulaire + Infos */}
-      <section className="py-24 md:py-36">
+      <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="grid gap-12 md:grid-cols-2">
             {/* Left: Form */}
@@ -51,7 +51,7 @@ export default function ContactPage() {
               {/* Horaires */}
               <div>
                 <h3 className="font-syne font-800 text-[1.3rem] tracking-tight text-anthracite">
-                  Quand on est ouverts.
+                  Nos horaires d&apos;ouverture.
                 </h3>
                 <p className="mt-3 text-anthracite/60 text-[0.9rem] leading-relaxed">
                   On vous accueille du mardi au samedi. Le dimanche et le lundi, l&apos;atelier se repose. Et nous aussi.
@@ -90,7 +90,7 @@ export default function ContactPage() {
               {/* Adresse placeholder */}
               <div>
                 <h3 className="font-syne font-800 text-[1.3rem] tracking-tight text-anthracite">
-                  Venez nous voir.
+                  Passez nous voir.
                 </h3>
                 <p className="mt-3 text-anthracite/60 text-[0.9rem] leading-relaxed">
                   Colombes Cycles<br />

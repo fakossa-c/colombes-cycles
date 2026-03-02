@@ -100,7 +100,7 @@ export default function ScrollProgress() {
   return (
     <div
       ref={lineRef}
-      className={`fixed left-5 md:left-8 top-0 bottom-0 z-[40] pointer-events-none transition-opacity duration-700 ${
+      className={`fixed left-5 md:left-8 top-0 bottom-0 z-[40] pointer-events-none transition-opacity duration-700 hidden md:block ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       aria-hidden="true"

@@ -99,7 +99,7 @@ export default function ContactForm() {
         {/* Telephone */}
         <div>
           <label htmlFor="telephone" className="mb-1.5 block text-[0.8rem] font-semibold tracking-wide text-anthracite/70">
-            Votre numero (pour qu&apos;on puisse vous rappeler)
+            Votre numéro
           </label>
           <input
             type="tel"

@@ -220,7 +220,7 @@ Un doute sur quel antivol choisir ? Vous cherchez un casque adapté à votre usa
 ### CTA FIN DE PAGE
 
 **Texte :**
-Vous ne savez pas encore par où commencer ? Venez, on regarde ensemble.
+Vous ne savez pas encore par où commencer ? Passez en boutique, on regarde ensemble.
 
 **CTA :** Prendre rendez-vous en boutique
 
@@ -473,7 +473,7 @@ On ne distribue pas tout le monde. On a sélectionné des marques qu'on peut dé
 ### EN-TÊTE
 
 **Titre :**
-On est là. Venez ou appelez.
+Écrivez-nous, appelez-nous ou passez nous voir.
 
 **Phrase d'accroche :**
 Une question sur un vélo, une réparation à planifier, un conseil avant d'acheter — c'est pour ça qu'on est là. Pas de formulaire inutile : on répond vraiment.
@@ -483,7 +483,7 @@ Une question sur un vélo, une réparation à planifier, un conseil avant d'ache
 ### FORMULAIRE — LABELS
 
 - **Nom** : Votre nom
-- **Téléphone** : Votre numéro (pour qu'on puisse vous rappeler)
+- **Téléphone** : Votre numéro
 - **Email** : Votre adresse email
 - **Type de demande** *(dropdown)* :
   - Achat d'un vélo
@@ -499,7 +499,7 @@ Une question sur un vélo, une réparation à planifier, un conseil avant d'ache
 ### HORAIRES
 
 **Titre de la section :**
-Quand on est ouverts.
+Nos horaires d'ouverture.
 
 **Texte d'accompagnement :**
 On vous accueille du mardi au samedi. Le dimanche et le lundi, l'atelier se repose — et nous aussi.
