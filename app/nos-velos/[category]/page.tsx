@@ -1,0 +1,157 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import PageHero from "@/components/ui/PageHero";
+import CtaBlock from "@/components/ui/CtaBlock";
+import { categories, getCategoryBySlug } from "@/lib/categories";
+
+type Props = {
+  params: Promise<{ category: string }>;
+};
+
+export function generateStaticParams() {
+  return categories.map((cat) => ({ category: cat.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category } = await params;
+  const cat = getCategoryBySlug(category);
+  if (!cat) return {};
+
+  return {
+    title: cat.metaTitle,
+    description: cat.metaDescription,
+    alternates: {
+      canonical: `https://www.colombes-cycles.fr/nos-velos/${cat.slug}`,
+    },
+  };
+}
+
+const placeholderProducts: Record<string, { name: string; price: string }[]> = {
+  "velos-de-ville": [
+    { name: "Orbea Vibe Urban", price: "899 €" },
+    { name: "Peugeot LC01 City", price: "649 €" },
+    { name: "Velodeville L200", price: "749 €" },
+    { name: "Gitane City Link", price: "549 €" },
+  ],
+  "velos-electriques": [
+    { name: "Orbea Optima E40", price: "2 899 €" },
+    { name: "Peugeot eLC01 BOSCH", price: "2 499 €" },
+    { name: "Orbea Vibe Mid BOSCH", price: "3 199 €" },
+  ],
+  vtt: [
+    { name: "Orbea MX 30", price: "799 €" },
+    { name: "Peugeot M02 Trail", price: "1 099 €" },
+    { name: "Orbea Laufey H30", price: "1 299 €" },
+  ],
+  "velos-enfants": [
+    { name: "Peugeot J16 (16 pouces)", price: "249 €" },
+    { name: "Gitane Miniz 20 pouces", price: "299 €" },
+    { name: "Peugeot J12 Draisienne", price: "89 €" },
+  ],
+  accessoires: [
+    { name: "Casque Abus Urban-I 3.0", price: "79 €" },
+    { name: "Antivol Kryptonite U-Lock", price: "59 €" },
+    { name: "Éclairage Busch+Müller Ixon", price: "49 €" },
+    { name: "Sacoche Ortlieb Back-Roller", price: "119 €" },
+  ],
+};
+
+export default async function CategoryPage({ params }: Props) {
+  const { category } = await params;
+  const cat = getCategoryBySlug(category);
+  if (!cat) notFound();
+
+  const products = placeholderProducts[cat.slug] || [];
+
+  return (
+    <>
+      <PageHero
+        tag={cat.title}
+        title={cat.pageTitle}
+        breadcrumbs={[
+          { label: "Accueil", href: "/" },
+          { label: "Nos Vélos", href: "/nos-velos" },
+          { label: cat.breadcrumbLabel },
+        ]}
+      />
+
+      <section className="py-24 md:py-36">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <p className="text-anthracite/70 text-[1.05rem] leading-relaxed max-w-3xl">
+            {cat.description}
+          </p>
+
+          <div className="mt-12 bg-terracotta/[0.06] border-l-4 border-terracotta p-6 md:p-8 rounded-sm max-w-3xl">
+            <p className="text-anthracite/70 text-[0.95rem] leading-relaxed italic">
+              {cat.angleConseil}
+            </p>
+          </div>
+
+          <div className="mt-20">
+            <h2 className="font-syne font-700 text-[1.4rem] md:text-[1.8rem] text-anthracite mb-10">
+              Nos modèles
+            </h2>
+
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {products.map((product, index) => (
+                <div
+                  key={index}
+                  className="reveal stagger-${index + 1} group rounded-sm overflow-hidden"
+                >
+                  <div className="aspect-[4/3] bg-anthracite/[0.05] flex items-center justify-center">
+                    <svg
+                      className="w-10 h-10 text-anthracite/15"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-syne font-600 text-sm text-anthracite">
+                      {product.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-semibold text-terracotta">
+                      {product.price}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {cat.brands.length > 0 && (
+            <div className="mt-20">
+              <h2 className="font-syne font-700 text-[1.4rem] md:text-[1.8rem] text-anthracite mb-8">
+                Nos marques
+              </h2>
+              <div className="flex flex-wrap gap-4">
+                {cat.brands.map((brand) => (
+                  <span
+                    key={brand}
+                    className="px-5 py-2.5 bg-anthracite/[0.05] rounded-full text-sm text-anthracite/70 font-medium"
+                  >
+                    {brand}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <CtaBlock
+        title="Vous ne savez pas encore par où commencer ?"
+        subtitle="Venez, on regarde ensemble."
+        ctaText="Prendre rendez-vous en boutique"
+        ctaHref="/contact"
+      />
+    </>
+  );
+}

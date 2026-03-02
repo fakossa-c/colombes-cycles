@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype 1 v2 — Vélo Interactif + Carrousel Vertical</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --anthracite: #1C1C1E;
+    --ivory: #F5F0E8;
+    --terracotta: #C4622D;
+    --creme: #FAFAF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--anthracite);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  section {
+    padding: 80px 40px 100px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--anthracite);
+    margin-bottom: 56px;
+    text-align: center;
+  }
+
+  /* ─── MAIN LAYOUT: bike left, carousel right ─── */
+  .bike-carousel-layout {
+    display: flex;
+    align-items: stretch;
+    gap: 60px;
+  }
+
+  /* ─── BIKE SIDE ─── */
+  .bike-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .bike-svg-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .bike-svg-wrapper svg.bike-main {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── BLUEPRINT BACKGROUND ─── */
+  .blueprint-bg {
+    position: absolute;
+    inset: -60px -80px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    filter: blur(0.2px);
+  }
+
+  .blueprint-bg svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ─── NON-CLICKABLE FRAME: very muted ─── */
+  .frame-part {
+    pointer-events: none;
+  }
+
+  /* ─── CLICKABLE HOTSPOTS ─── */
+  .hotspot {
+    cursor: pointer;
+  }
+
+  /* Invisible hit area for easier clicking */
+  .hit-area {
+    fill: transparent;
+    stroke: none;
+    pointer-events: all;
+  }
+
+  /* Visible colored zone background */
+  .zone-fill {
+    fill: rgba(196, 98, 45, 0.06);
+    stroke: rgba(196, 98, 45, 0.2);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .hotspot:hover .zone-fill,
+  .hotspot.active .zone-fill {
+    fill: rgba(196, 98, 45, 0.10);
+    stroke: var(--terracotta);
+    stroke-width: 1.5;
+    stroke-dasharray: none;
+  }
+
+  /* Hotspot inner elements transition */
+  .hotspot .part-line {
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hotspot:hover .part-line,
+  .hotspot.active .part-line {
+    stroke: var(--terracotta) !important;
+    opacity: 1 !important;
+  }
+
+  /* Marker dots on each zone */
+  .zone-marker {
+    pointer-events: none;
+    transition: all 0.4s ease;
+  }
+
+  .zone-marker-ring {
+    fill: none;
+    stroke: var(--terracotta);
+    stroke-width: 1.5;
+    opacity: 0.5;
+    transition: all 0.4s ease;
+  }
+
+  .zone-marker-dot {
+    fill: var(--terracotta);
+    opacity: 0.7;
+    transition: all 0.4s ease;
+  }
+
+  .hotspot:hover .zone-marker-ring,
+  .hotspot.active .zone-marker-ring {
+    opacity: 1;
+    stroke-width: 2;
+  }
+
+  .hotspot:hover .zone-marker-dot,
+  .hotspot.active .zone-marker-dot {
+    opacity: 1;
+    r: 4;
+  }
+
+  /* Pulse animation on markers */
+  .zone-pulse {
+    fill: none;
+    stroke: var(--terracotta);
+    stroke-width: 1;
+    opacity: 0;
+    animation: zonePulse 3s ease-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes zonePulse {
+    0% { r: 8; opacity: 0.5; }
+    100% { r: 22; opacity: 0; }
+  }
+
+  /* Floating labels near zones */
+  .zone-label {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .zone-label::before {
+    content: '';
+    width: 12px;
+    height: 1px;
+    background: var(--terracotta);
+    opacity: 0.4;
+    transition: all 0.3s ease;
+  }
+
+  .zone-label:hover,
+  .zone-label.active {
+    opacity: 1;
+  }
+
+  .zone-label:hover::before,
+  .zone-label.active::before {
+    width: 20px;
+    opacity: 1;
+  }
+
+  /* ─── CAROUSEL SIDE ─── */
+  .carousel-side {
+    flex: 0 0 380px;
+    position: relative;
+    overflow: hidden;
+    /* Fixed height: show ~1.3 cards so user sees there's more */
+    height: 520px;
+  }
+
+  /* Fade masks top and bottom */
+  .carousel-side::before,
+  .carousel-side::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .carousel-side::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--creme), transparent);
+  }
+
+  .carousel-side::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--creme), transparent);
+  }
+
+  .carousel-track {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    padding: 40px 0;
+  }
+
+  /* Individual card */
+  .carousel-card {
+    padding: 32px 28px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Default: blurred / dimmed */
+    opacity: 0.35;
+    filter: blur(1px);
+    transform: scale(0.97);
+  }
+
+  .carousel-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--terracotta);
+    transform: scaleY(0);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .carousel-card.active {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+    background: rgba(196, 98, 45, 0.04);
+  }
+
+  .carousel-card.active::before {
+    transform: scaleY(1);
+  }
+
+  /* Neighbors slightly more visible than distant items */
+  .carousel-card.neighbor {
+    opacity: 0.55;
+    filter: blur(0.5px);
+    transform: scale(0.98);
+  }
+
+  .card-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--anthracite);
+    opacity: 0.04;
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    transition: opacity 0.5s ease;
+  }
+
+  .carousel-card.active .card-number {
+    opacity: 0.06;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--anthracite);
+    margin-bottom: 4px;
+  }
+
+  .card-tagline {
+    color: var(--terracotta);
+    font-weight: 500;
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+
+  .card-desc {
+    color: rgba(28, 28, 30, 0.55);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1), margin 0.4s ease;
+  }
+
+  .carousel-card.active .card-desc {
+    max-height: 200px;
+    margin-bottom: 16px;
+  }
+
+  .card-tarif {
+    display: inline-block;
+    background: rgba(28, 28, 30, 0.05);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-card.active .card-tarif {
+    background: rgba(196, 98, 45, 0.08);
+    color: var(--terracotta);
+  }
+
+  /* Scroll indicators */
+  .scroll-hint {
+    position: absolute;
+    right: 12px;
+    z-index: 3;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+  }
+
+  .scroll-hint:hover {
+    opacity: 1;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+
+  .scroll-hint svg {
+    width: 14px;
+    height: 14px;
+    color: var(--anthracite);
+  }
+
+  .scroll-hint-up { top: 8px; }
+  .scroll-hint-down { bottom: 8px; }
+
+  .scroll-hint.hidden { opacity: 0; pointer-events: none; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 960px) {
+    section { padding: 60px 20px 80px; }
+
+    .bike-carousel-layout {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .bike-side {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .carousel-side {
+      flex: none;
+      width: 100%;
+      height: auto;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .carousel-side::before,
+    .carousel-side::after {
+      display: none;
+    }
+
+    .carousel-track {
+      padding: 0;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 8px;
+    }
+
+    .carousel-track::-webkit-scrollbar { display: none; }
+
+    .carousel-card {
+      flex: 0 0 280px;
+      scroll-snap-align: center;
+      margin-bottom: 0;
+      /* On mobile all cards are visible but dimmed */
+      opacity: 0.45;
+      filter: blur(0.5px);
+    }
+
+    .carousel-card.active {
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    .carousel-card.neighbor {
+      opacity: 0.5;
+    }
+
+    .card-desc {
+      max-height: none !important;
+      margin-bottom: 14px !important;
+      font-size: 0.8rem;
+    }
+
+    .scroll-hint { display: none; }
+
+    .zone-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <p class="tag">Nos services</p>
+  <h2>Ce qu'on fait à l'atelier.</h2>
+
+  <div class="bike-carousel-layout">
+
+    <!-- ═══ BIKE SIDE ═══ -->
+    <div class="bike-side">
+      <div class="bike-svg-wrapper">
+
+        <!-- ═══ BLUEPRINT / CROQUIS BACKGROUND ═══ -->
+        <div class="blueprint-bg">
+          <svg viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- ── Grid millimétré ── -->
+            <defs>
+              <pattern id="gridSmall" width="20" height="20" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="20" stroke="#1C1C1E" stroke-width="0.3"/>
+                <line x1="0" y1="0" x2="20" y2="0" stroke="#1C1C1E" stroke-width="0.3"/>
+              </pattern>
+              <pattern id="gridLarge" width="100" height="100" patternUnits="userSpaceOnUse">
+                <rect width="100" height="100" fill="url(#gridSmall)"/>
+                <line x1="0" y1="0" x2="0" y2="100" stroke="#1C1C1E" stroke-width="0.8"/>
+                <line x1="0" y1="0" x2="100" y2="0" stroke="#1C1C1E" stroke-width="0.8"/>
+              </pattern>
+            </defs>
+            <rect width="800" height="520" fill="url(#gridLarge)" opacity="0.7"/>
+
+            <!-- ── Cercle Vitruve (grand, centré) ── -->
+            <circle cx="380" cy="260" r="200" stroke="#1C1C1E" stroke-width="0.6" opacity="0.5"/>
+            <circle cx="380" cy="260" r="160" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3" stroke-dasharray="6 4"/>
+
+            <!-- ── Carré Vitruve ── -->
+            <rect x="165" y="80" width="430" height="360" stroke="#1C1C1E" stroke-width="0.5" opacity="0.35"/>
+
+            <!-- ── Axes de symétrie / construction ── -->
+            <line x1="380" y1="30" x2="380" y2="490" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3" stroke-dasharray="8 6"/>
+            <line x1="80" y1="260" x2="680" y2="260" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3" stroke-dasharray="8 6"/>
+
+            <!-- ── Diagonales du carré ── -->
+            <line x1="165" y1="80" x2="595" y2="440" stroke="#1C1C1E" stroke-width="0.3" opacity="0.15"/>
+            <line x1="595" y1="80" x2="165" y2="440" stroke="#1C1C1E" stroke-width="0.3" opacity="0.15"/>
+
+            <!-- ── Arcs de construction (golden ratio / compas) ── -->
+            <path d="M 180 440 A 250 250 0 0 1 380 60" stroke="#1C1C1E" stroke-width="0.4" opacity="0.2" stroke-dasharray="4 6"/>
+            <path d="M 580 440 A 250 250 0 0 0 380 60" stroke="#1C1C1E" stroke-width="0.4" opacity="0.2" stroke-dasharray="4 6"/>
+
+            <!-- ── Petits cercles de construction (points de pivot) ── -->
+            <circle cx="380" cy="260" r="3" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+            <circle cx="380" cy="260" r="1" fill="#1C1C1E" opacity="0.3"/>
+            <circle cx="380" cy="80" r="2" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+            <circle cx="380" cy="440" r="2" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+            <circle cx="165" cy="260" r="2" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+            <circle cx="595" cy="260" r="2" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+
+            <!-- ── Lignes de cotes (dimension lines) ── -->
+            <!-- Cote horizontale basse -->
+            <line x1="120" y1="470" x2="660" y2="470" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+            <line x1="120" y1="465" x2="120" y2="475" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+            <line x1="660" y1="465" x2="660" y2="475" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+            <!-- Petits traits de cote -->
+            <line x1="120" y1="468" x2="126" y2="472" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+            <line x1="660" y1="468" x2="654" y2="472" stroke="#1C1C1E" stroke-width="0.4" opacity="0.3"/>
+
+            <!-- Cote verticale droite -->
+            <line x1="700" y1="100" x2="700" y2="420" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+            <line x1="695" y1="100" x2="705" y2="100" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+            <line x1="695" y1="420" x2="705" y2="420" stroke="#1C1C1E" stroke-width="0.5" opacity="0.3"/>
+
+            <!-- ── Annotations style croquis technique ── -->
+            <!-- Angle marks -->
+            <path d="M 380 260 L 410 240" stroke="#1C1C1E" stroke-width="0.3" opacity="0.25"/>
+            <path d="M 395 252 A 18 18 0 0 0 405 245" stroke="#1C1C1E" stroke-width="0.3" fill="none" opacity="0.2"/>
+
+            <!-- ── Spirale dorée subtile ── -->
+            <path d="M 380 260
+                     C 380 200, 440 160, 480 200
+                     C 520 240, 500 300, 450 310
+                     C 400 320, 380 290, 390 270
+                     C 400 250, 415 258, 408 268"
+                  stroke="#1C1C1E" stroke-width="0.4" fill="none" opacity="0.15"/>
+
+            <!-- ── Texte technique (très discret) ── -->
+            <text x="130" y="475" font-family="Inter, sans-serif" font-size="5" fill="#1C1C1E" opacity="0.25" letter-spacing="0.1em">1080mm</text>
+            <text x="693" y="265" font-family="Inter, sans-serif" font-size="5" fill="#1C1C1E" opacity="0.25" letter-spacing="0.1em" transform="rotate(-90, 693, 265)">640mm</text>
+            <text x="355" y="50" font-family="Inter, sans-serif" font-size="4.5" fill="#1C1C1E" opacity="0.2" letter-spacing="0.15em" text-transform="uppercase">axe central</text>
+
+            <!-- ── Petites croix de repère (register marks) ── -->
+            <g opacity="0.25">
+              <line x1="95" y1="55" x2="105" y2="55" stroke="#1C1C1E" stroke-width="0.4"/>
+              <line x1="100" y1="50" x2="100" y2="60" stroke="#1C1C1E" stroke-width="0.4"/>
+              <circle cx="100" cy="55" r="4" stroke="#1C1C1E" stroke-width="0.3" fill="none"/>
+
+              <line x1="695" y1="55" x2="705" y2="55" stroke="#1C1C1E" stroke-width="0.4"/>
+              <line x1="700" y1="50" x2="700" y2="60" stroke="#1C1C1E" stroke-width="0.4"/>
+              <circle cx="700" cy="55" r="4" stroke="#1C1C1E" stroke-width="0.3" fill="none"/>
+
+              <line x1="95" y1="465" x2="105" y2="465" stroke="#1C1C1E" stroke-width="0.4"/>
+              <line x1="100" y1="460" x2="100" y2="470" stroke="#1C1C1E" stroke-width="0.4"/>
+              <circle cx="100" cy="465" r="4" stroke="#1C1C1E" stroke-width="0.3" fill="none"/>
+
+              <line x1="695" y1="465" x2="705" y2="465" stroke="#1C1C1E" stroke-width="0.4"/>
+              <line x1="700" y1="460" x2="700" y2="470" stroke="#1C1C1E" stroke-width="0.4"/>
+              <circle cx="700" cy="465" r="4" stroke="#1C1C1E" stroke-width="0.3" fill="none"/>
+            </g>
+
+            <!-- ── Subdivisions d'angle (rapporteur) ── -->
+            <g opacity="0.12">
+              <line x1="380" y1="260" x2="540" y2="160" stroke="#1C1C1E" stroke-width="0.3"/>
+              <line x1="380" y1="260" x2="540" y2="360" stroke="#1C1C1E" stroke-width="0.3"/>
+              <line x1="380" y1="260" x2="220" y2="160" stroke="#1C1C1E" stroke-width="0.3"/>
+              <line x1="380" y1="260" x2="220" y2="360" stroke="#1C1C1E" stroke-width="0.3"/>
+            </g>
+
+          </svg>
+        </div>
+
+        <svg class="bike-main" viewBox="0 0 600 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- ── DECORATIVE: spokes, hubs, inner rims (non-clickable) ── -->
+          <g class="frame-part" opacity="0.12">
+            <!-- Spokes rear -->
+            <line x1="148" y1="193" x2="148" y2="208" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="148" y1="308" x2="148" y2="323" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="83" y1="258" x2="98" y2="258" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="198" y1="258" x2="213" y2="258" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="102" y1="212" x2="110" y2="220" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="186" y1="296" x2="194" y2="304" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="102" y1="304" x2="110" y2="296" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="186" y1="212" x2="194" y2="220" stroke="#1C1C1E" stroke-width="0.5"/>
+            <!-- Spokes front -->
+            <line x1="452" y1="193" x2="452" y2="208" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="452" y1="308" x2="452" y2="323" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="387" y1="258" x2="402" y2="258" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="502" y1="258" x2="517" y2="258" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="406" y1="212" x2="414" y2="220" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="490" y1="296" x2="498" y2="304" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="406" y1="304" x2="414" y2="296" stroke="#1C1C1E" stroke-width="0.5"/>
+            <line x1="490" y1="212" x2="498" y2="220" stroke="#1C1C1E" stroke-width="0.5"/>
+            <!-- Inner rims -->
+            <circle cx="148" cy="258" r="58" stroke="#1C1C1E" stroke-width="0.5"/>
+            <circle cx="452" cy="258" r="58" stroke="#1C1C1E" stroke-width="0.5"/>
+            <!-- Hubs -->
+            <circle cx="148" cy="258" r="6" fill="#1C1C1E" opacity="0.4"/>
+            <circle cx="452" cy="258" r="6" fill="#1C1C1E" opacity="0.4"/>
+          </g>
+
+          <!-- ══════════════════════════════════════════════════════ -->
+          <!-- CLICKABLE ZONES — Révision FIRST (bottom layer),     -->
+          <!-- then specific zones on top so they capture clicks    -->
+          <!-- ══════════════════════════════════════════════════════ -->
+
+          <!-- ── CLICKABLE ZONE: Révision = the frame itself ── -->
+          <g class="hotspot" data-service="revision" data-index="0">
+            <!-- Invisible thick hit areas along each tube for easy clicking -->
+            <line class="hit-area" x1="235" y1="140" x2="415" y2="140" stroke="transparent" stroke-width="20"/>
+            <line class="hit-area" x1="248" y1="148" x2="152" y2="248" stroke="transparent" stroke-width="20"/>
+            <line class="hit-area" x1="235" y1="140" x2="200" y2="252" stroke="transparent" stroke-width="20"/>
+            <line class="hit-area" x1="200" y1="252" x2="148" y2="258" stroke="transparent" stroke-width="18"/>
+            <line class="hit-area" x1="235" y1="140" x2="148" y2="258" stroke="transparent" stroke-width="18"/>
+            <line class="hit-area" x1="415" y1="140" x2="452" y2="258" stroke="transparent" stroke-width="20"/>
+            <ellipse class="hit-area" cx="235" cy="107" rx="28" ry="14"/>
+            <path class="hit-area" d="M 395 100 Q 418 88 445 100 L 445 118 L 395 118 Z"/>
+
+            <!-- Visible frame tubes -->
+            <line class="part-line" x1="235" y1="140" x2="415" y2="140" stroke="#1C1C1E" stroke-width="3" opacity="0.25"/>
+            <line class="part-line" x1="248" y1="148" x2="152" y2="248" stroke="#1C1C1E" stroke-width="3" opacity="0.25"/>
+            <line class="part-line" x1="235" y1="140" x2="200" y2="252" stroke="#1C1C1E" stroke-width="3" opacity="0.25"/>
+            <line class="part-line" x1="200" y1="252" x2="148" y2="258" stroke="#1C1C1E" stroke-width="2.5" opacity="0.2"/>
+            <line class="part-line" x1="235" y1="140" x2="148" y2="258" stroke="#1C1C1E" stroke-width="1.8" opacity="0.18"/>
+            <line class="part-line" x1="415" y1="140" x2="452" y2="258" stroke="#1C1C1E" stroke-width="3" opacity="0.25"/>
+            <!-- Handlebar stem -->
+            <line class="part-line" x1="415" y1="140" x2="418" y2="115" stroke="#1C1C1E" stroke-width="2.5" opacity="0.22"/>
+            <!-- Handlebar -->
+            <path class="part-line" d="M 400 108 Q 418 98 440 106" stroke="#1C1C1E" stroke-width="2.5" fill="none" opacity="0.22"/>
+            <!-- Seat post -->
+            <line class="part-line" x1="235" y1="140" x2="235" y2="112" stroke="#1C1C1E" stroke-width="2.5" opacity="0.22"/>
+            <!-- Seat -->
+            <ellipse class="part-line" cx="235" cy="107" rx="22" ry="6" stroke="#1C1C1E" stroke-width="2" fill="none" opacity="0.2"/>
+
+            <!-- Marker on top tube center -->
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="325" cy="140" r="8" style="animation-delay: 0.5s"/>
+              <circle class="zone-marker-ring" cx="325" cy="140" r="8"/>
+              <circle class="zone-marker-dot" cx="325" cy="140" r="3"/>
+            </g>
+          </g>
+
+          <!-- ── CLICKABLE ZONE: Roues & Pneus (on top of frame) ── -->
+          <g class="hotspot" data-service="roues" data-index="3">
+            <!-- Zone backgrounds -->
+            <circle class="zone-fill" cx="148" cy="258" r="72"/>
+            <circle class="zone-fill" cx="452" cy="258" r="72"/>
+            <!-- Hit areas -->
+            <circle class="hit-area" cx="148" cy="258" r="76"/>
+            <circle class="hit-area" cx="452" cy="258" r="76"/>
+            <!-- Visible tires -->
+            <circle class="part-line" cx="148" cy="258" r="72" stroke="#1C1C1E" stroke-width="2" fill="none" opacity="0.55"/>
+            <circle class="part-line" cx="452" cy="258" r="72" stroke="#1C1C1E" stroke-width="2" fill="none" opacity="0.55"/>
+            <!-- Markers -->
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="148" cy="186" r="8" style="animation-delay: 0.2s"/>
+              <circle class="zone-marker-ring" cx="148" cy="186" r="8"/>
+              <circle class="zone-marker-dot" cx="148" cy="186" r="3"/>
+            </g>
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="452" cy="186" r="8" style="animation-delay: 1.2s"/>
+              <circle class="zone-marker-ring" cx="452" cy="186" r="8"/>
+              <circle class="zone-marker-dot" cx="452" cy="186" r="3"/>
+            </g>
+          </g>
+
+          <!-- ── CLICKABLE ZONE: Freinage (on top of wheels) ── -->
+          <g class="hotspot" data-service="freinage" data-index="1">
+            <!-- Zone background blobs -->
+            <rect class="zone-fill" x="430" y="170" width="46" height="34" rx="8"/>
+            <rect class="zone-fill" x="124" y="170" width="46" height="34" rx="8"/>
+            <!-- Hit areas -->
+            <rect class="hit-area" x="426" y="165" width="54" height="44" rx="10"/>
+            <rect class="hit-area" x="120" y="165" width="54" height="44" rx="10"/>
+            <!-- Brake calipers -->
+            <rect class="part-line" x="439" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" stroke-width="1.8" fill="none" opacity="0.65"/>
+            <rect class="part-line" x="459" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" stroke-width="1.8" fill="none" opacity="0.65"/>
+            <rect class="part-line" x="133" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" stroke-width="1.8" fill="none" opacity="0.65"/>
+            <rect class="part-line" x="153" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" stroke-width="1.8" fill="none" opacity="0.65"/>
+            <!-- Brake cables -->
+            <path class="part-line" d="M 435 120 Q 440 148 442 175" stroke="#1C1C1E" stroke-width="1" fill="none" opacity="0.35" stroke-dasharray="3,2"/>
+            <path class="part-line" d="M 236 130 Q 180 140 155 175" stroke="#1C1C1E" stroke-width="1" fill="none" opacity="0.35" stroke-dasharray="3,2"/>
+            <!-- Marker -->
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="453" cy="176" r="8" style="animation-delay: 0.8s"/>
+              <circle class="zone-marker-ring" cx="453" cy="176" r="8"/>
+              <circle class="zone-marker-dot" cx="453" cy="176" r="3"/>
+            </g>
+          </g>
+
+          <!-- ── CLICKABLE ZONE: Transmission (on top of wheel/frame) ── -->
+          <g class="hotspot" data-service="transmission" data-index="2">
+            <!-- Zone background -->
+            <ellipse class="zone-fill" cx="186" cy="260" rx="52" ry="38"/>
+            <!-- Hit area -->
+            <ellipse class="hit-area" cx="186" cy="260" rx="56" ry="42"/>
+            <!-- Chainring -->
+            <circle class="part-line" cx="200" cy="255" r="24" stroke="#1C1C1E" stroke-width="2" fill="none" opacity="0.55"/>
+            <circle class="part-line" cx="200" cy="255" r="17" stroke="#1C1C1E" stroke-width="1" fill="none" opacity="0.3"/>
+            <!-- Rear cog -->
+            <circle class="part-line" cx="148" cy="258" r="14" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.45"/>
+            <!-- Chain -->
+            <line class="part-line" x1="200" y1="272" x2="148" y2="272" stroke="#1C1C1E" stroke-width="1.8" opacity="0.45"/>
+            <line class="part-line" x1="200" y1="238" x2="148" y2="244" stroke="#1C1C1E" stroke-width="1.8" opacity="0.45"/>
+            <!-- Pedal cranks -->
+            <line class="part-line" x1="178" y1="254" x2="168" y2="270" stroke="#1C1C1E" stroke-width="2.5" opacity="0.45"/>
+            <line class="part-line" x1="222" y1="256" x2="232" y2="240" stroke="#1C1C1E" stroke-width="2.5" opacity="0.45"/>
+            <!-- Derailleur -->
+            <path class="part-line" d="M 152 274 L 158 288 L 146 293" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.45"/>
+            <!-- Marker -->
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="200" cy="228" r="8" style="animation-delay: 1.6s"/>
+              <circle class="zone-marker-ring" cx="200" cy="228" r="8"/>
+              <circle class="zone-marker-dot" cx="200" cy="228" r="3"/>
+            </g>
+          </g>
+
+          <!-- ── CLICKABLE ZONE: Électrique (on top of frame) ── -->
+          <g class="hotspot" data-service="electrique" data-index="4">
+            <!-- Zone background -->
+            <rect class="zone-fill" x="170" y="148" width="68" height="28" rx="6" transform="rotate(-40, 204, 162)"/>
+            <!-- Hit area -->
+            <rect class="hit-area" x="165" y="142" width="78" height="40" rx="8" transform="rotate(-40, 204, 162)"/>
+            <!-- Battery pack -->
+            <rect class="part-line" x="178" y="155" width="52" height="16" rx="4" stroke="#1C1C1E" stroke-width="1.8" fill="rgba(196,98,45,0.05)" opacity="0.7" transform="rotate(-40, 204, 163)"/>
+            <!-- Lightning bolt -->
+            <path class="part-line" d="M 196 170 L 202 160 L 198 165 L 205 155" stroke="var(--terracotta)" stroke-width="1.5" fill="none" opacity="0.55"/>
+            <!-- Marker -->
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="186" cy="150" r="8" style="animation-delay: 2s"/>
+              <circle class="zone-marker-ring" cx="186" cy="150" r="8"/>
+              <circle class="zone-marker-dot" cx="186" cy="150" r="3"/>
+            </g>
+          </g>
+
+          <!-- ── CLICKABLE ZONE: Urgences (badge, topmost layer) ── -->
+          <g class="hotspot" data-service="urgences" data-index="5">
+            <circle class="zone-fill" cx="545" cy="70" r="26"/>
+            <circle class="hit-area" cx="545" cy="70" r="30"/>
+            <circle class="part-line" cx="545" cy="70" r="22" stroke="#1C1C1E" stroke-width="1.2" fill="var(--creme)" opacity="0.9"/>
+            <text x="545" y="67" text-anchor="middle" font-family="Syne, sans-serif" font-size="11" font-weight="700" fill="var(--anthracite)" opacity="0.6" style="pointer-events:none">SOS</text>
+            <text x="545" y="82" text-anchor="middle" font-family="Inter, sans-serif" font-size="7" fill="var(--anthracite)" opacity="0.35" style="pointer-events:none">urgences</text>
+            <g class="zone-marker">
+              <circle class="zone-pulse" cx="545" cy="70" r="8" style="animation-delay: 2.4s"/>
+            </g>
+          </g>
+
+        </svg>
+
+        <!-- Floating labels -->
+        <div class="zone-label" style="top: 22%; left: 48%" data-service="revision" data-index="0">Révision</div>
+        <div class="zone-label" style="top: 46%; left: 82%" data-service="roues" data-index="3">Roues</div>
+        <div class="zone-label" style="top: 42%; right: 82%" data-service="freinage" data-index="1">Freins</div>
+        <div class="zone-label" style="bottom: 20%; left: 20%" data-service="transmission" data-index="2">Transmission</div>
+        <div class="zone-label" style="top: 34%; left: 24%" data-service="electrique" data-index="4">VAE</div>
+      </div>
+    </div>
+
+    <!-- ═══ CAROUSEL SIDE ═══ -->
+    <div class="carousel-side" id="carouselSide">
+
+      <div class="scroll-hint scroll-hint-up hidden" id="scrollUp" onclick="navigateCarousel(-1)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+        </svg>
+      </div>
+
+      <div class="carousel-track" id="carouselTrack">
+
+        <div class="carousel-card active" data-service="revision" data-index="0">
+          <div class="card-number">01</div>
+          <h3 class="card-title">Révision complète</h3>
+          <p class="card-tagline">Un point sur tout.</p>
+          <p class="card-desc">On inspecte l'ensemble du vélo : freins, transmission, roues, câbles, direction, pédalier, éclairage. On remplace ce qui est usé, on règle ce qui dérive. C'est la prestation à faire une fois par an si vous roulez régulièrement.</p>
+          <span class="card-tarif">85 – 120 €</span>
+        </div>
+
+        <div class="carousel-card" data-service="freinage" data-index="1">
+          <div class="card-number">02</div>
+          <h3 class="card-title">Freinage</h3>
+          <p class="card-tagline">Quand ça ne mord plus assez.</p>
+          <p class="card-desc">Patins usés, câbles étirés, leviers qui tirent dans le vide. On règle, on remplace ce qui doit l'être. Freins mécaniques ou hydrauliques, sur tous types de vélos.</p>
+          <span class="card-tarif">15 – 45 €</span>
+        </div>
+
+        <div class="carousel-card" data-service="transmission" data-index="2">
+          <div class="card-number">03</div>
+          <h3 class="card-title">Transmission</h3>
+          <p class="card-tagline">Quand ça grince, saute ou déraille.</p>
+          <p class="card-desc">Dérailleur mal réglé, chaîne usée, cassette HS, manettes qui répondent mal. On diagnostique l'état de chaque pièce avant de proposer un devis. On ne remplace pas ce qui peut encore servir.</p>
+          <span class="card-tarif">20 – 80 €</span>
+        </div>
+
+        <div class="carousel-card" data-service="roues" data-index="3">
+          <div class="card-number">04</div>
+          <h3 class="card-title">Roues & pneus</h3>
+          <p class="card-tagline">Crevaison, voile, jante.</p>
+          <p class="card-desc">Crevaison réparée ou chambre remplacée selon l'état du pneu. Voile de roue corrigé sur le truing stand. Rayons cassés remplacés. Si la jante est trop abîmée, on vous le dit clairement.</p>
+          <span class="card-tarif">10 – 35 €</span>
+        </div>
+
+        <div class="carousel-card" data-service="electrique" data-index="4">
+          <div class="card-number">05</div>
+          <h3 class="card-title">Électrique</h3>
+          <p class="card-tagline">La spécialité BOSCH.</p>
+          <p class="card-desc">Mathys est notre spécialiste VAE, certifié BOSCH eBike. Panne d'assistance, erreur d'affichage, batterie qui ne charge plus : on diagnostique avec les outils homologués BOSCH.</p>
+          <span class="card-tarif">Devis après diagnostic</span>
+        </div>
+
+        <div class="carousel-card" data-service="urgences" data-index="5">
+          <div class="card-number">06</div>
+          <h3 class="card-title">Urgences</h3>
+          <p class="card-tagline">Quand vous avez besoin de rouler vite.</p>
+          <p class="card-desc">Crevaison avant une réunion, frein cassé, dérailleur tordu après une chute. On fait ce qu'on peut pour vous dépanner rapidement. Appelez avant de passer.</p>
+          <span class="card-tarif">Selon intervention</span>
+        </div>
+
+      </div>
+
+      <div class="scroll-hint scroll-hint-down" id="scrollDown" onclick="navigateCarousel(1)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const services = ['revision', 'freinage', 'transmission', 'roues', 'electrique', 'urgences'];
+  let activeIndex = 0;
+  let isMobile = window.innerWidth <= 960;
+
+  const cards = document.querySelectorAll('.carousel-card');
+  const track = document.getElementById('carouselTrack');
+  const carouselSide = document.getElementById('carouselSide');
+  const scrollUp = document.getElementById('scrollUp');
+  const scrollDown = document.getElementById('scrollDown');
+
+  // ─── SELECT SERVICE (unified) ───
+  function selectByIndex(index, source) {
+    if (index < 0 || index >= services.length) return;
+    activeIndex = index;
+    const service = services[index];
+
+    // Update bike hotspots
+    document.querySelectorAll('.hotspot').forEach(h => {
+      h.classList.toggle('active', h.dataset.service === service);
+    });
+
+    // Update labels
+    document.querySelectorAll('.zone-label').forEach(l => {
+      l.classList.toggle('active', l.dataset.service === service);
+    });
+
+    // Update carousel cards
+    cards.forEach((card, i) => {
+      card.classList.remove('active', 'neighbor');
+      if (i === index) {
+        card.classList.add('active');
+      } else if (Math.abs(i - index) === 1) {
+        card.classList.add('neighbor');
+      }
+    });
+
+    // Scroll carousel (desktop: vertical translate, mobile: horizontal scroll)
+    if (!isMobile && source !== 'scroll') {
+      scrollToCard(index);
+    }
+
+    if (isMobile && source !== 'scroll') {
+      const card = cards[index];
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    updateScrollHints();
+  }
+
+  // ─── Desktop vertical scroll ───
+  function scrollToCard(index) {
+    const card = cards[index];
+    const containerH = carouselSide.offsetHeight;
+    const cardTop = card.offsetTop - track.offsetTop;
+    const cardH = card.offsetHeight;
+    // Center the active card in the viewport
+    const offset = cardTop - (containerH / 2) + (cardH / 2);
+    track.style.transform = `translateY(-${Math.max(0, offset)}px)`;
+  }
+
+  function updateScrollHints() {
+    scrollUp.classList.toggle('hidden', activeIndex === 0);
+    scrollDown.classList.toggle('hidden', activeIndex === services.length - 1);
+  }
+
+  function navigateCarousel(dir) {
+    selectByIndex(activeIndex + dir, 'nav');
+  }
+
+  // ─── BIKE CLICK HANDLERS ───
+  // Attach click to all hotspots
+  document.querySelectorAll('.hotspot').forEach(h => {
+    h.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(h.dataset.index);
+      selectByIndex(idx, 'bike');
+    });
+  });
+
+  // Attach click to floating labels
+  document.querySelectorAll('.zone-label').forEach(l => {
+    l.addEventListener('click', () => {
+      const idx = parseInt(l.dataset.index);
+      selectByIndex(idx, 'bike');
+    });
+  });
+
+  // ─── CAROUSEL CLICK HANDLERS ───
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => {
+      selectByIndex(i, 'card');
+    });
+  });
+
+  // ─── DESKTOP: Mouse wheel on carousel ───
+  carouselSide.addEventListener('wheel', (e) => {
+    if (isMobile) return;
+    e.preventDefault();
+    if (e.deltaY > 20) navigateCarousel(1);
+    else if (e.deltaY < -20) navigateCarousel(-1);
+  }, { passive: false });
+
+  // ─── DESKTOP: Touch/drag on carousel (vertical swipe) ───
+  let touchStartY = 0;
+  let touchDragging = false;
+
+  carouselSide.addEventListener('touchstart', (e) => {
+    if (isMobile) return;
+    touchStartY = e.touches[0].clientY;
+    touchDragging = true;
+  }, { passive: true });
+
+  carouselSide.addEventListener('touchmove', (e) => {
+    if (isMobile || !touchDragging) return;
+    // prevent default to avoid page scroll
+  }, { passive: true });
+
+  carouselSide.addEventListener('touchend', (e) => {
+    if (isMobile || !touchDragging) return;
+    touchDragging = false;
+    const deltaY = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(deltaY) > 40) {
+      navigateCarousel(deltaY > 0 ? 1 : -1);
+    }
+  });
+
+  // ─── MOBILE: Horizontal scroll observation ───
+  function setupMobileScrollObserver() {
+    if (!isMobile) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+          const idx = parseInt(entry.target.dataset.index);
+          selectByIndex(idx, 'scroll');
+        }
+      });
+    }, {
+      root: track,
+      threshold: 0.6,
+    });
+
+    cards.forEach(card => observer.observe(card));
+  }
+
+  // ─── KEYBOARD ───
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); navigateCarousel(1); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); navigateCarousel(-1); }
+  });
+
+  // ─── RESIZE ───
+  window.addEventListener('resize', () => {
+    const wasMobile = isMobile;
+    isMobile = window.innerWidth <= 960;
+    if (isMobile !== wasMobile) {
+      if (isMobile) {
+        track.style.transform = '';
+        setupMobileScrollObserver();
+      }
+      selectByIndex(activeIndex, 'resize');
+    }
+  });
+
+  // ─── INIT ───
+  selectByIndex(0, 'init');
+  if (isMobile) setupMobileScrollObserver();
+</script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype 2 — Accordéon Vertical</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --anthracite: #1C1C1E;
+    --ivory: #F5F0E8;
+    --terracotta: #C4622D;
+    --creme: #FAFAF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--anthracite);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 80px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--anthracite);
+    margin-bottom: 60px;
+  }
+
+  .accordion-layout {
+    display: flex;
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  /* Big number column */
+  .number-column {
+    flex: 0 0 120px;
+    position: sticky;
+    top: 100px;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .number-track {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .number-item {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 8rem;
+    line-height: 200px;
+    height: 200px;
+    color: var(--anthracite);
+    opacity: 0.04;
+    transition: opacity 0.4s ease;
+  }
+
+  .number-item.active {
+    opacity: 0.08;
+  }
+
+  /* Accordion column */
+  .accordion-column {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid rgba(28, 28, 30, 0.08);
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    padding: 24px 0;
+    cursor: pointer;
+    gap: 20px;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+
+  .accordion-header:hover {
+    padding-left: 8px;
+  }
+
+  .accordion-header:hover .acc-title {
+    color: var(--terracotta);
+  }
+
+  .acc-index {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: rgba(28, 28, 30, 0.2);
+    min-width: 28px;
+    transition: color 0.3s ease;
+  }
+
+  .accordion-item.open .acc-index {
+    color: var(--terracotta);
+  }
+
+  .acc-title-group {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .acc-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--anthracite);
+    transition: color 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .accordion-item.open .acc-title {
+    color: var(--terracotta);
+  }
+
+  .acc-tagline {
+    font-size: 0.85rem;
+    color: rgba(28, 28, 30, 0.35);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .acc-tarif {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: rgba(28, 28, 30, 0.5);
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .acc-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    color: rgba(28, 28, 30, 0.3);
+    flex-shrink: 0;
+  }
+
+  .accordion-item.open .acc-arrow {
+    transform: rotate(180deg);
+    color: var(--terracotta);
+  }
+
+  /* Expandable body */
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .accordion-body-inner {
+    padding: 0 0 32px 48px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s ease 0.1s;
+  }
+
+  .accordion-item.open .accordion-body-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .acc-description {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: rgba(28, 28, 30, 0.6);
+  }
+
+  /* SVG illustration that draws itself */
+  .acc-illustration {
+    flex: 0 0 140px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .acc-illustration svg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .draw-path {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+  }
+
+  .accordion-item.open .draw-path {
+    stroke-dashoffset: 0;
+  }
+
+  /* Progress bar at bottom */
+  .progress-bar {
+    margin-top: 40px;
+    height: 2px;
+    background: rgba(28, 28, 30, 0.06);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 1px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Mobile */
+  @media (max-width: 800px) {
+    section { padding: 60px 20px; }
+
+    .accordion-layout { flex-direction: column; gap: 20px; }
+
+    .number-column { display: none; }
+
+    .acc-tagline { display: none; }
+
+    .accordion-body-inner { flex-direction: column; gap: 20px; padding-left: 28px; }
+
+    .acc-illustration { flex: none; }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <p class="tag">Nos services</p>
+  <h2>Ce qu'on fait à l'atelier.</h2>
+
+  <div class="accordion-layout">
+
+    <!-- Big number -->
+    <div class="number-column">
+      <div class="number-track" id="numberTrack">
+        <div class="number-item active">01</div>
+        <div class="number-item">02</div>
+        <div class="number-item">03</div>
+        <div class="number-item">04</div>
+        <div class="number-item">05</div>
+        <div class="number-item">06</div>
+        <div class="number-item">07</div>
+      </div>
+    </div>
+
+    <!-- Accordion -->
+    <div class="accordion-column">
+
+      <!-- 1 -->
+      <div class="accordion-item open" data-index="0">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">01</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Révision complète</span>
+            <span class="acc-tagline">Un point sur tout.</span>
+          </div>
+          <span class="acc-tarif">85 – 120 €</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body" style="max-height: 300px;">
+          <div class="accordion-body-inner">
+            <p class="acc-description">On inspecte l'ensemble du vélo : freins, transmission, roues, câbles, direction, pédalier, éclairage. On remplace ce qui est usé, on règle ce qui dérive. À l'issue, le vélo roule comme il devrait. C'est la prestation à faire une fois par an si vous roulez régulièrement.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <path class="draw-path" d="M50 10 L50 90 M10 50 L90 50 M25 25 L75 75 M75 25 L25 75" stroke-linecap="round"/>
+                <circle class="draw-path" cx="50" cy="50" r="35"/>
+                <circle class="draw-path" cx="50" cy="50" r="8"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="accordion-item" data-index="1">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">02</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Révision simple</span>
+            <span class="acc-tagline">L'essentiel, bien fait.</span>
+          </div>
+          <span class="acc-tarif">45 – 65 €</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Freins réglés, transmission nettoyée et lubrifiée, pneus vérifiés, câbles inspectés. Une mise au point rapide pour repartir l'esprit tranquille. Idéale si votre vélo roule bien mais n'a pas été entretenu depuis quelques mois.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <path class="draw-path" d="M20 50 L40 50 M60 50 L80 50" stroke-linecap="round"/>
+                <circle class="draw-path" cx="50" cy="50" r="12"/>
+                <circle class="draw-path" cx="20" cy="50" r="4"/>
+                <circle class="draw-path" cx="80" cy="50" r="4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="accordion-item" data-index="2">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">03</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Freinage</span>
+            <span class="acc-tagline">Quand ça ne mord plus assez.</span>
+          </div>
+          <span class="acc-tarif">15 – 45 €</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Patins usés, câbles étirés, leviers qui tirent dans le vide : c'est l'un des problèmes les plus courants. On règle, on remplace ce qui doit l'être. Freins mécaniques ou hydrauliques, sur tous types de vélos.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <circle class="draw-path" cx="50" cy="50" r="30"/>
+                <rect class="draw-path" x="38" y="38" width="24" height="24" rx="3"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="accordion-item" data-index="3">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">04</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Transmission</span>
+            <span class="acc-tagline">Quand ça grince, saute ou déraille.</span>
+          </div>
+          <span class="acc-tarif">20 – 80 €</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Dérailleur mal réglé, chaîne usée, cassette HS, manettes qui répondent mal : la transmission se règle avec précision. On diagnostique l'état de chaque pièce avant de proposer un devis. On ne remplace pas ce qui peut encore servir.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <circle class="draw-path" cx="35" cy="55" r="20"/>
+                <circle class="draw-path" cx="70" cy="45" r="12"/>
+                <path class="draw-path" d="M35 35 L70 33 M35 75 L70 57" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="accordion-item" data-index="4">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">05</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Roues & pneus</span>
+            <span class="acc-tagline">Crevaison, voile, jante.</span>
+          </div>
+          <span class="acc-tarif">10 – 35 €</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Crevaison réparée ou chambre remplacée selon l'état du pneu. Voile de roue corrigé sur le truing stand. Rayons cassés remplacés. Si la jante est trop abîmée, on vous le dit clairement.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <circle class="draw-path" cx="50" cy="50" r="38"/>
+                <circle class="draw-path" cx="50" cy="50" r="30"/>
+                <circle class="draw-path" cx="50" cy="50" r="6"/>
+                <path class="draw-path" d="M50 12 L50 20 M50 80 L50 88 M12 50 L20 50 M80 50 L88 50" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="accordion-item" data-index="5">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">06</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Électrique</span>
+            <span class="acc-tagline">La spécialité BOSCH.</span>
+          </div>
+          <span class="acc-tarif">Sur devis</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Mathys est notre spécialiste VAE, certifié BOSCH eBike. Panne d'assistance, erreur d'affichage, batterie qui ne charge plus : on diagnostique avec les outils homologués BOSCH.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <path class="draw-path" d="M45 15 L35 50 L55 50 L40 85" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="accordion-item" data-index="6">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="acc-index">07</span>
+          <div class="acc-title-group">
+            <span class="acc-title">Urgences</span>
+            <span class="acc-tagline">Quand il faut rouler vite.</span>
+          </div>
+          <span class="acc-tarif">Selon cas</span>
+          <svg class="acc-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <p class="acc-description">Crevaison avant une réunion, frein cassé, dérailleur tordu après une chute. On fait ce qu'on peut pour vous dépanner rapidement. Appelez avant de passer pour qu'on vérifie qu'on peut vous recevoir.</p>
+            <div class="acc-illustration">
+              <svg viewBox="0 0 100 100" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+                <circle class="draw-path" cx="50" cy="50" r="35"/>
+                <path class="draw-path" d="M50 25 L50 52 L65 60" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 14.28%"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function toggleAccordion(header) {
+    const item = header.parentElement;
+    const wasOpen = item.classList.contains('open');
+    const index = parseInt(item.dataset.index);
+
+    // Close all
+    document.querySelectorAll('.accordion-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.accordion-body').style.maxHeight = '0';
+    });
+
+    // Open clicked (if it wasn't already open)
+    if (!wasOpen) {
+      item.classList.add('open');
+      const body = item.querySelector('.accordion-body');
+      body.style.maxHeight = body.scrollHeight + 'px';
+      updateNumber(index);
+      updateProgress(index);
+    } else {
+      updateNumber(0);
+      updateProgress(0);
+      document.querySelector('.accordion-item[data-index="0"]').classList.add('open');
+      document.querySelector('.accordion-item[data-index="0"] .accordion-body').style.maxHeight = '300px';
+    }
+  }
+
+  function updateNumber(index) {
+    const track = document.getElementById('numberTrack');
+    track.style.transform = `translateY(-${index * 200}px)`;
+    document.querySelectorAll('.number-item').forEach((n, i) => {
+      n.classList.toggle('active', i === index);
+    });
+  }
+
+  function updateProgress(index) {
+    const fill = document.getElementById('progressFill');
+    fill.style.width = `${((index + 1) / 7) * 100}%`;
+  }
+</script>
+</body>
+</html>

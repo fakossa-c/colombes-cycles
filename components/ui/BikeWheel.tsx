@@ -28,13 +28,15 @@ function MiniWheel({ size = 48 }: { size?: number }) {
       {Array.from({ length: spokes }).map((_, i) => {
         const angle = (i * 360) / spokes;
         const rad = (angle * Math.PI) / 180;
+        const cos = Math.round(Math.cos(rad) * 1e10) / 1e10;
+        const sin = Math.round(Math.sin(rad) * 1e10) / 1e10;
         return (
           <line
             key={i}
-            x1={r + hub * Math.cos(rad)}
-            y1={r + hub * Math.sin(rad)}
-            x2={r + (rim - 2) * Math.cos(rad)}
-            y2={r + (rim - 2) * Math.sin(rad)}
+            x1={r + hub * cos}
+            y1={r + hub * sin}
+            x2={r + (rim - 2) * cos}
+            y2={r + (rim - 2) * sin}
             stroke="currentColor"
             strokeWidth="0.5"
           />

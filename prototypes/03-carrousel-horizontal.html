@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype 3 — Carrousel Horizontal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --anthracite: #1C1C1E;
+    --ivory: #F5F0E8;
+    --terracotta: #C4622D;
+    --creme: #FAFAF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--anthracite);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  section {
+    padding: 80px 0 100px;
+  }
+
+  .section-header {
+    padding: 0 40px;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--anthracite);
+  }
+
+  /* Navigation arrows */
+  .nav-arrows {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(28, 28, 30, 0.15);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: var(--anthracite);
+  }
+
+  .nav-btn:hover {
+    background: var(--anthracite);
+    border-color: var(--anthracite);
+    color: var(--creme);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+
+  .nav-btn:disabled:hover {
+    background: transparent;
+    color: var(--anthracite);
+    border-color: rgba(28, 28, 30, 0.15);
+  }
+
+  .nav-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Carousel track */
+  .carousel-viewport {
+    overflow: hidden;
+    padding: 0 40px;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: grab;
+  }
+
+  .carousel-track:active {
+    cursor: grabbing;
+  }
+
+  /* Cards */
+  .service-card {
+    flex: 0 0 min(80vw, 720px);
+    min-height: 420px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    background: var(--ivory);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--terracotta);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-card.in-view::before {
+    transform: scaleY(1);
+  }
+
+  /* Left side: illustration */
+  .card-visual {
+    flex: 0 0 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: rgba(28, 28, 30, 0.02);
+  }
+
+  .card-visual svg {
+    width: 160px;
+    height: 160px;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-card:hover .card-visual svg {
+    transform: scale(1.05) rotate(-3deg);
+  }
+
+  .card-big-number {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 10rem;
+    line-height: 1;
+    color: var(--anthracite);
+    opacity: 0.03;
+    user-select: none;
+  }
+
+  /* Right side: content */
+  .card-content {
+    flex: 1;
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--anthracite);
+    margin-bottom: 6px;
+  }
+
+  .card-tagline {
+    color: var(--terracotta);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: rgba(28, 28, 30, 0.6);
+    margin-bottom: 28px;
+  }
+
+  .card-tarif {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(28, 28, 30, 0.05);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 10px 24px;
+    border-radius: 100px;
+    color: var(--anthracite);
+    align-self: flex-start;
+  }
+
+  .card-tarif-label {
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: rgba(28, 28, 30, 0.4);
+    margin-right: 4px;
+  }
+
+  /* Progress & counter */
+  .carousel-footer {
+    padding: 30px 40px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .carousel-counter {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--anthracite);
+    min-width: 50px;
+  }
+
+  .carousel-counter span {
+    color: rgba(28, 28, 30, 0.25);
+  }
+
+  .carousel-progress {
+    flex: 1;
+    height: 2px;
+    background: rgba(28, 28, 30, 0.06);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .carousel-progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    border-radius: 1px;
+    transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Mobile */
+  @media (max-width: 800px) {
+    .section-header { padding: 0 20px; }
+    .carousel-viewport { padding: 0 20px; }
+    .carousel-footer { padding: 24px 20px 0; }
+
+    .service-card {
+      flex: 0 0 85vw;
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .card-visual {
+      flex: none;
+      height: 200px;
+    }
+
+    .card-big-number { font-size: 6rem; }
+
+    .card-content { padding: 28px 24px; }
+
+    .nav-arrows { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <div class="section-header">
+    <div>
+      <p class="tag">Nos services</p>
+      <h2>Ce qu'on fait<br>à l'atelier.</h2>
+    </div>
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prevBtn" disabled onclick="navigate(-1)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" onclick="navigate(1)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel-viewport">
+    <div class="carousel-track" id="track">
+
+      <!-- 1 -->
+      <div class="service-card in-view">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <circle cx="80" cy="80" r="55" opacity="0.3"/>
+            <path d="M80 25 L80 135 M25 80 L135 80 M45 45 L115 115 M115 45 L45 115" stroke-linecap="round" opacity="0.5"/>
+            <circle cx="80" cy="80" r="12"/>
+            <circle cx="80" cy="80" r="55"/>
+          </svg>
+          <div class="card-big-number">01</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Révision complète</h3>
+          <p class="card-tagline">Un point sur tout.</p>
+          <p class="card-desc">On inspecte l'ensemble du vélo : freins, transmission, roues, câbles, direction, pédalier, éclairage. On remplace ce qui est usé, on règle ce qui dérive. C'est la prestation à faire une fois par an si vous roulez régulièrement.</p>
+          <div class="card-tarif">
+            <span class="card-tarif-label">à partir de</span> 85 – 120 €
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <line x1="30" y1="80" x2="60" y2="80" stroke-linecap="round"/>
+            <line x1="100" y1="80" x2="130" y2="80" stroke-linecap="round"/>
+            <circle cx="80" cy="80" r="20"/>
+            <circle cx="30" cy="80" r="6" fill="var(--terracotta)" opacity="0.15"/>
+            <circle cx="130" cy="80" r="6" fill="var(--terracotta)" opacity="0.15"/>
+            <line x1="60" y1="65" x2="60" y2="95" stroke-linecap="round" opacity="0.3"/>
+            <line x1="100" y1="65" x2="100" y2="95" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <div class="card-big-number">02</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Révision simple</h3>
+          <p class="card-tagline">L'essentiel, bien fait.</p>
+          <p class="card-desc">Freins réglés, transmission nettoyée et lubrifiée, pneus vérifiés, câbles inspectés. Une mise au point rapide pour repartir l'esprit tranquille. Idéale si votre vélo n'a pas été entretenu depuis quelques mois.</p>
+          <div class="card-tarif">
+            <span class="card-tarif-label">à partir de</span> 45 – 65 €
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <circle cx="80" cy="80" r="50"/>
+            <rect x="62" y="62" width="36" height="36" rx="4"/>
+            <line x1="74" y1="56" x2="74" y2="104" stroke-linecap="round" opacity="0.2"/>
+            <line x1="86" y1="56" x2="86" y2="104" stroke-linecap="round" opacity="0.2"/>
+          </svg>
+          <div class="card-big-number">03</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Freinage</h3>
+          <p class="card-tagline">Quand ça ne mord plus assez.</p>
+          <p class="card-desc">Patins usés, câbles étirés, leviers qui tirent dans le vide : c'est l'un des problèmes les plus courants et les plus faciles à négliger. On règle, on remplace ce qui doit l'être. Freins mécaniques ou hydrauliques.</p>
+          <div class="card-tarif">
+            <span class="card-tarif-label">à partir de</span> 15 – 45 €
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <circle cx="55" cy="90" r="30"/>
+            <circle cx="110" cy="70" r="18"/>
+            <line x1="55" y1="60" x2="110" y2="52" stroke-linecap="round"/>
+            <line x1="55" y1="120" x2="110" y2="88" stroke-linecap="round"/>
+            <circle cx="55" cy="90" r="6" fill="var(--terracotta)" opacity="0.15"/>
+            <circle cx="110" cy="70" r="4" fill="var(--terracotta)" opacity="0.15"/>
+          </svg>
+          <div class="card-big-number">04</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Transmission</h3>
+          <p class="card-tagline">Quand ça grince, saute ou déraille.</p>
+          <p class="card-desc">Dérailleur mal réglé, chaîne usée, cassette HS, manettes qui répondent mal. On diagnostique l'état de chaque pièce avant de proposer un devis. On ne remplace pas ce qui peut encore servir.</p>
+          <div class="card-tarif">
+            <span class="card-tarif-label">à partir de</span> 20 – 80 €
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <circle cx="80" cy="80" r="55"/>
+            <circle cx="80" cy="80" r="45" opacity="0.3"/>
+            <circle cx="80" cy="80" r="10"/>
+            <line x1="80" y1="25" x2="80" y2="35" stroke-linecap="round"/>
+            <line x1="80" y1="125" x2="80" y2="135" stroke-linecap="round"/>
+            <line x1="25" y1="80" x2="35" y2="80" stroke-linecap="round"/>
+            <line x1="125" y1="80" x2="135" y2="80" stroke-linecap="round"/>
+            <line x1="41" y1="41" x2="48" y2="48" stroke-linecap="round" opacity="0.5"/>
+            <line x1="112" y1="112" x2="119" y2="119" stroke-linecap="round" opacity="0.5"/>
+            <line x1="119" y1="41" x2="112" y2="48" stroke-linecap="round" opacity="0.5"/>
+            <line x1="48" y1="112" x2="41" y2="119" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+          <div class="card-big-number">05</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Roues & pneus</h3>
+          <p class="card-tagline">Crevaison, voile, jante.</p>
+          <p class="card-desc">Crevaison réparée ou chambre remplacée selon l'état du pneu. Voile de roue corrigé sur le truing stand. Rayons cassés remplacés. Si la jante est trop abîmée, on vous le dit clairement.</p>
+          <div class="card-tarif">
+            <span class="card-tarif-label">à partir de</span> 10 – 35 €
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="2">
+            <path d="M75 30 L55 80 L85 80 L60 130" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+            <circle cx="80" cy="80" r="55" stroke-width="1" opacity="0.15"/>
+          </svg>
+          <div class="card-big-number">06</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Électrique</h3>
+          <p class="card-tagline">La spécialité BOSCH.</p>
+          <p class="card-desc">Mathys est notre spécialiste VAE, certifié BOSCH eBike. Panne d'assistance, erreur d'affichage, batterie qui ne charge plus : on diagnostique avec les outils homologués BOSCH.</p>
+          <div class="card-tarif">Devis après diagnostic</div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="service-card">
+        <div class="card-visual">
+          <svg viewBox="0 0 160 160" fill="none" stroke="var(--terracotta)" stroke-width="1.5">
+            <circle cx="80" cy="80" r="50"/>
+            <path d="M80 45 L80 82 L105 95" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+            <circle cx="80" cy="80" r="4" fill="var(--terracotta)"/>
+          </svg>
+          <div class="card-big-number">07</div>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Urgences</h3>
+          <p class="card-tagline">Quand vous avez besoin de rouler vite.</p>
+          <p class="card-desc">Crevaison avant une réunion, frein cassé, dérailleur tordu après une chute : on fait ce qu'on peut pour vous dépanner rapidement. Appelez avant de passer pour qu'on vérifie qu'on peut vous recevoir.</p>
+          <div class="card-tarif">Selon intervention</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer: counter + progress -->
+  <div class="carousel-footer">
+    <div class="carousel-counter">
+      <span id="currentNum">01</span> <span>/ 07</span>
+    </div>
+    <div class="carousel-progress">
+      <div class="carousel-progress-fill" id="progressFill" style="width: 14.28%"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('track');
+  const cards = document.querySelectorAll('.service-card');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const currentNum = document.getElementById('currentNum');
+  const progressFill = document.getElementById('progressFill');
+  let current = 0;
+  const total = cards.length;
+
+  // Drag support
+  let isDragging = false;
+  let startX = 0;
+  let scrollStart = 0;
+  let dragOffset = 0;
+
+  function getCardWidth() {
+    return cards[0].offsetWidth + 24; // card width + gap
+  }
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    const offset = current * getCardWidth();
+    track.style.transform = `translateX(-${offset}px)`;
+
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+
+    currentNum.textContent = String(current + 1).padStart(2, '0');
+    progressFill.style.width = `${((current + 1) / total) * 100}%`;
+
+    // Mark in-view card
+    cards.forEach((card, i) => {
+      card.classList.toggle('in-view', i === current);
+    });
+  }
+
+  function navigate(dir) {
+    goTo(current + dir);
+  }
+
+  // Touch / mouse drag
+  track.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    track.style.transition = 'none';
+  });
+
+  track.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    dragOffset = e.clientX - startX;
+    const base = current * getCardWidth();
+    track.style.transform = `translateX(-${base - dragOffset}px)`;
+  });
+
+  track.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.transition = '';
+    if (Math.abs(dragOffset) > 80) {
+      navigate(dragOffset < 0 ? 1 : -1);
+    } else {
+      goTo(current);
+    }
+    dragOffset = 0;
+  });
+
+  track.addEventListener('mouseleave', () => {
+    if (isDragging) {
+      isDragging = false;
+      track.style.transition = '';
+      goTo(current);
+      dragOffset = 0;
+    }
+  });
+
+  // Touch events
+  track.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  track.addEventListener('touchmove', (e) => {
+    dragOffset = e.touches[0].clientX - startX;
+    const base = current * getCardWidth();
+    track.style.transform = `translateX(-${base - dragOffset}px)`;
+  }, { passive: true });
+
+  track.addEventListener('touchend', () => {
+    track.style.transition = '';
+    if (Math.abs(dragOffset) > 50) {
+      navigate(dragOffset < 0 ? 1 : -1);
+    } else {
+      goTo(current);
+    }
+    dragOffset = 0;
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') navigate(1);
+    if (e.key === 'ArrowLeft') navigate(-1);
+  });
+
+  // Init
+  goTo(0);
+</script>
+</body>
+</html>

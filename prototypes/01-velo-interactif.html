@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype 1 — Vélo Interactif</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --anthracite: #1C1C1E;
+    --ivory: #F5F0E8;
+    --terracotta: #C4622D;
+    --creme: #FAFAF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--anthracite);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 80px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--anthracite);
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  .bike-container {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    max-width: 1200px;
+    width: 100%;
+  }
+
+  .bike-svg-wrapper {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+  }
+
+  .bike-svg-wrapper svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Hotspots */
+  .hotspot {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .hotspot circle, .hotspot ellipse, .hotspot rect, .hotspot path {
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hotspot:hover circle,
+  .hotspot:hover ellipse,
+  .hotspot:hover rect,
+  .hotspot:hover path,
+  .hotspot.active circle,
+  .hotspot.active ellipse,
+  .hotspot.active rect,
+  .hotspot.active path {
+    stroke: var(--terracotta);
+    stroke-width: 3;
+  }
+
+  /* Pulse rings on hotspots */
+  .pulse-ring {
+    animation: pulse 2.5s ease-out infinite;
+    transform-origin: center;
+    opacity: 0;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+
+  /* Detail panel */
+  .detail-panel {
+    flex: 0 0 400px;
+    min-height: 380px;
+    position: relative;
+  }
+
+  .detail-content {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .detail-content.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .detail-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--anthracite);
+    opacity: 0.06;
+    position: absolute;
+    top: -20px;
+    left: -10px;
+  }
+
+  .detail-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--anthracite);
+    margin-bottom: 6px;
+  }
+
+  .detail-tagline {
+    color: var(--terracotta);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .detail-desc {
+    color: rgba(28, 28, 30, 0.6);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .detail-tarif {
+    display: inline-block;
+    background: rgba(28, 28, 30, 0.05);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 100px;
+  }
+
+  /* Placeholder state */
+  .placeholder-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .placeholder-state.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .placeholder-icon {
+    width: 48px;
+    height: 48px;
+    border: 2px dashed rgba(28, 28, 30, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .placeholder-icon svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(28, 28, 30, 0.25);
+  }
+
+  .placeholder-text {
+    font-size: 0.9rem;
+    color: rgba(28, 28, 30, 0.3);
+    line-height: 1.5;
+  }
+
+  /* Dot indicator under the bike */
+  .zone-indicators {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .zone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(28, 28, 30, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .zone-dot.active {
+    background: var(--terracotta);
+    transform: scale(1.3);
+  }
+
+  /* Labels floating near bike parts */
+  .floating-label {
+    position: absolute;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(28, 28, 30, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .floating-label:hover,
+  .floating-label.active {
+    color: var(--terracotta);
+  }
+
+  .floating-label::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .floating-label.active::before {
+    opacity: 1;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    section { padding: 60px 20px; }
+
+    .bike-container {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .detail-panel {
+      flex: none;
+      min-height: 280px;
+      width: 100%;
+    }
+
+    .bike-svg-wrapper {
+      max-width: 500px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <p class="tag">Nos services</p>
+  <h2>Ce qu'on fait à l'atelier.</h2>
+
+  <div class="bike-container">
+
+    <!-- SVG Vélo -->
+    <div class="bike-svg-wrapper">
+      <svg viewBox="0 0 600 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Roue arrière -->
+        <g class="hotspot" data-service="roues" onclick="selectService('roues')">
+          <circle cx="145" cy="250" r="75" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <circle cx="145" cy="250" r="60" stroke="#1C1C1E" stroke-width="0.5" fill="none" opacity="0.3"/>
+          <circle cx="145" cy="250" r="8" fill="#1C1C1E" opacity="0.15"/>
+          <!-- Spokes -->
+          <line x1="145" y1="175" x2="145" y2="190" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="145" y1="310" x2="145" y2="325" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="70" y1="250" x2="85" y2="250" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="205" y1="250" x2="220" y2="250" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="92" y1="197" x2="102" y2="207" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="188" y1="303" x2="198" y2="293" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="92" y1="303" x2="102" y2="293" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="188" y1="197" x2="198" y2="207" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <!-- Pulse -->
+          <circle class="pulse-ring" cx="145" cy="250" r="20" stroke="var(--terracotta)" stroke-width="1" fill="none"/>
+        </g>
+
+        <!-- Roue avant -->
+        <g class="hotspot" data-service="roues" onclick="selectService('roues')">
+          <circle cx="455" cy="250" r="75" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <circle cx="455" cy="250" r="60" stroke="#1C1C1E" stroke-width="0.5" fill="none" opacity="0.3"/>
+          <circle cx="455" cy="250" r="8" fill="#1C1C1E" opacity="0.15"/>
+          <!-- Spokes -->
+          <line x1="455" y1="175" x2="455" y2="190" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="455" y1="310" x2="455" y2="325" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="380" y1="250" x2="395" y2="250" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="515" y1="250" x2="530" y2="250" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="402" y1="197" x2="412" y2="207" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="498" y1="303" x2="508" y2="293" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="402" y1="303" x2="412" y2="293" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <line x1="498" y1="197" x2="508" y2="207" stroke="#1C1C1E" stroke-width="0.5" opacity="0.4"/>
+          <circle class="pulse-ring" cx="455" cy="250" r="20" stroke="var(--terracotta)" stroke-width="1" fill="none" style="animation-delay: 0.5s"/>
+        </g>
+
+        <!-- Cadre -->
+        <g class="hotspot" data-service="revision" onclick="selectService('revision')">
+          <!-- Top tube -->
+          <line x1="235" y1="130" x2="420" y2="130" stroke="#1C1C1E" stroke-width="2.5" opacity="0.8"/>
+          <!-- Down tube -->
+          <line x1="250" y1="140" x2="145" y2="245" stroke="#1C1C1E" stroke-width="2.5" opacity="0.8"/>
+          <!-- Seat tube -->
+          <line x1="235" y1="130" x2="200" y2="245" stroke="#1C1C1E" stroke-width="2.5" opacity="0.8"/>
+          <!-- Chainstay -->
+          <line x1="200" y1="245" x2="145" y2="250" stroke="#1C1C1E" stroke-width="2" opacity="0.6"/>
+          <!-- Seatstay -->
+          <line x1="235" y1="130" x2="145" y2="250" stroke="#1C1C1E" stroke-width="1.5" opacity="0.5"/>
+        </g>
+
+        <!-- Fourche -->
+        <g class="hotspot" data-service="revision" onclick="selectService('revision')">
+          <line x1="420" y1="130" x2="455" y2="250" stroke="#1C1C1E" stroke-width="2.5" opacity="0.8"/>
+        </g>
+
+        <!-- Guidon -->
+        <g class="hotspot" data-service="revision" onclick="selectService('revision')">
+          <path d="M 405 110 Q 420 100 440 108" stroke="#1C1C1E" stroke-width="2" fill="none" opacity="0.7"/>
+          <line x1="420" y1="130" x2="420" y2="108" stroke="#1C1C1E" stroke-width="2" opacity="0.7"/>
+        </g>
+
+        <!-- Selle -->
+        <g class="hotspot" data-service="revision" onclick="selectService('revision')">
+          <line x1="235" y1="130" x2="235" y2="105" stroke="#1C1C1E" stroke-width="2" opacity="0.7"/>
+          <ellipse cx="235" cy="100" rx="22" ry="6" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.6"/>
+        </g>
+
+        <!-- Zone Freins - étriers -->
+        <g class="hotspot" data-service="freinage" onclick="selectService('freinage')">
+          <!-- Frein avant -->
+          <rect x="442" y="178" width="8" height="16" rx="2" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <rect x="460" y="178" width="8" height="16" rx="2" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <!-- Frein arrière -->
+          <rect x="132" y="178" width="8" height="16" rx="2" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <rect x="150" y="178" width="8" height="16" rx="2" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <!-- Cable frein -->
+          <path d="M 440 115 Q 445 145 445 178" stroke="#1C1C1E" stroke-width="0.8" fill="none" opacity="0.4" stroke-dasharray="3,3"/>
+        </g>
+
+        <!-- Zone Transmission -->
+        <g class="hotspot" data-service="transmission" onclick="selectService('transmission')">
+          <!-- Pédalier -->
+          <circle cx="200" cy="248" r="22" stroke="#1C1C1E" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <circle cx="200" cy="248" r="16" stroke="#1C1C1E" stroke-width="1" fill="none" opacity="0.3"/>
+          <!-- Pignon arrière -->
+          <circle cx="145" cy="250" r="16" stroke="#1C1C1E" stroke-width="1" fill="none" opacity="0.4"/>
+          <!-- Chaîne -->
+          <line x1="200" y1="265" x2="145" y2="266" stroke="#1C1C1E" stroke-width="1.5" opacity="0.5"/>
+          <line x1="200" y1="232" x2="145" y2="234" stroke="#1C1C1E" stroke-width="1.5" opacity="0.5"/>
+          <!-- Pédales -->
+          <line x1="178" y1="248" x2="170" y2="260" stroke="#1C1C1E" stroke-width="2" opacity="0.5"/>
+          <line x1="222" y1="248" x2="230" y2="236" stroke="#1C1C1E" stroke-width="2" opacity="0.5"/>
+          <!-- Dérailleur -->
+          <path d="M 150 268 L 155 280 L 145 285" stroke="#1C1C1E" stroke-width="1.2" fill="none" opacity="0.5"/>
+        </g>
+
+        <!-- Zone Électrique (batterie sur le down tube) -->
+        <g class="hotspot" data-service="electrique" onclick="selectService('electrique')">
+          <rect x="185" y="160" width="50" height="18" rx="4" stroke="#1C1C1E" stroke-width="1.5" fill="rgba(196,98,45,0.06)" opacity="0.8" transform="rotate(-42, 210, 169)"/>
+          <!-- Éclair -->
+          <path d="M 198 172 L 204 165 L 200 169 L 206 162" stroke="var(--terracotta)" stroke-width="1.2" fill="none" opacity="0.6"/>
+        </g>
+
+        <!-- Badge Urgences -->
+        <g class="hotspot" data-service="urgences" onclick="selectService('urgences')">
+          <circle cx="530" cy="80" r="22" stroke="#1C1C1E" stroke-width="1" fill="var(--creme)" opacity="0.9"/>
+          <text x="530" y="76" text-anchor="middle" font-family="Syne" font-size="11" font-weight="700" fill="var(--anthracite)" opacity="0.7">SOS</text>
+          <text x="530" y="90" text-anchor="middle" font-family="Inter" font-size="7" fill="var(--anthracite)" opacity="0.4">urgences</text>
+        </g>
+      </svg>
+
+      <!-- Floating labels -->
+      <div class="floating-label" style="top: 14%; left: 36%; transform: translateX(-50%)" data-service="revision" onclick="selectService('revision')">
+        Révision
+      </div>
+      <div class="floating-label" style="top: 48%; right: 4%" data-service="roues" onclick="selectService('roues')">
+        Roues
+      </div>
+      <div class="floating-label" style="top: 45%; left: 3%" data-service="roues" onclick="selectService('roues')">
+        Pneus
+      </div>
+      <div class="floating-label" style="top: 44%; left: 54%" data-service="freinage" onclick="selectService('freinage')">
+        Freins
+      </div>
+      <div class="floating-label" style="bottom: 18%; left: 24%" data-service="transmission" onclick="selectService('transmission')">
+        Transmission
+      </div>
+      <div class="floating-label" style="top: 33%; left: 25%" data-service="electrique" onclick="selectService('electrique')">
+        VAE ⚡
+      </div>
+
+      <div class="zone-indicators">
+        <div class="zone-dot" data-service="revision" onclick="selectService('revision')"></div>
+        <div class="zone-dot" data-service="freinage" onclick="selectService('freinage')"></div>
+        <div class="zone-dot" data-service="transmission" onclick="selectService('transmission')"></div>
+        <div class="zone-dot" data-service="roues" onclick="selectService('roues')"></div>
+        <div class="zone-dot" data-service="electrique" onclick="selectService('electrique')"></div>
+        <div class="zone-dot" data-service="urgences" onclick="selectService('urgences')"></div>
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel">
+      <div class="placeholder-state" id="placeholder">
+        <div class="placeholder-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59"/>
+          </svg>
+        </div>
+        <p class="placeholder-text">Cliquez sur une zone du vélo<br>pour découvrir le service associé</p>
+      </div>
+
+      <div class="detail-content" data-detail="revision">
+        <div class="detail-number">01</div>
+        <h3 class="detail-title">Révision complète & simple</h3>
+        <p class="detail-tagline">Un point sur tout.</p>
+        <p class="detail-desc">On inspecte l'ensemble du vélo : freins, transmission, roues, câbles, direction, pédalier, éclairage. On remplace ce qui est usé, on règle ce qui dérive. Révision complète ou simple selon vos besoins.</p>
+        <div><span class="detail-tarif">45 – 120 €</span></div>
+      </div>
+
+      <div class="detail-content" data-detail="freinage">
+        <div class="detail-number">02</div>
+        <h3 class="detail-title">Freinage</h3>
+        <p class="detail-tagline">Quand ça ne mord plus assez.</p>
+        <p class="detail-desc">Patins usés, câbles étirés, leviers qui tirent dans le vide. On règle, on remplace ce qui doit l'être. Freins mécaniques ou hydrauliques, sur tous types de vélos.</p>
+        <div><span class="detail-tarif">15 – 45 €</span></div>
+      </div>
+
+      <div class="detail-content" data-detail="transmission">
+        <div class="detail-number">03</div>
+        <h3 class="detail-title">Transmission</h3>
+        <p class="detail-tagline">Quand ça grince, saute ou déraille.</p>
+        <p class="detail-desc">Dérailleur mal réglé, chaîne usée, cassette HS, manettes qui répondent mal. On diagnostique l'état de chaque pièce avant de vous proposer un devis. On ne remplace pas ce qui peut encore servir.</p>
+        <div><span class="detail-tarif">20 – 80 €</span></div>
+      </div>
+
+      <div class="detail-content" data-detail="roues">
+        <div class="detail-number">04</div>
+        <h3 class="detail-title">Roues & pneus</h3>
+        <p class="detail-tagline">Crevaison, voile, jante.</p>
+        <p class="detail-desc">Crevaison réparée ou chambre remplacée selon l'état. Voile de roue corrigé sur le truing stand. Rayons cassés remplacés. Si la jante est trop abîmée, on vous le dit clairement.</p>
+        <div><span class="detail-tarif">10 – 35 €</span></div>
+      </div>
+
+      <div class="detail-content" data-detail="electrique">
+        <div class="detail-number">05</div>
+        <h3 class="detail-title">Électrique</h3>
+        <p class="detail-tagline">La spécialité BOSCH.</p>
+        <p class="detail-desc">Mathys est notre spécialiste VAE, certifié BOSCH eBike. Panne d'assistance, erreur d'affichage, batterie qui ne charge plus, capteur défaillant : on diagnostique avec les outils homologués.</p>
+        <div><span class="detail-tarif">Devis après diagnostic</span></div>
+      </div>
+
+      <div class="detail-content" data-detail="urgences">
+        <div class="detail-number">06</div>
+        <h3 class="detail-title">Urgences</h3>
+        <p class="detail-tagline">Quand vous avez besoin de rouler vite.</p>
+        <p class="detail-desc">Crevaison avant une réunion, frein cassé, dérailleur tordu après une chute : on fait ce qu'on peut pour vous dépanner rapidement. Appelez avant de passer pour qu'on vérifie qu'on peut vous recevoir.</p>
+        <div><span class="detail-tarif">Selon intervention</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let activeService = null;
+
+  function selectService(service) {
+    // If clicking the same service, deselect
+    if (activeService === service) {
+      activeService = null;
+      document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+      document.querySelectorAll('.detail-content').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.zone-dot').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.floating-label').forEach(l => l.classList.remove('active'));
+      document.getElementById('placeholder').classList.remove('hidden');
+      return;
+    }
+
+    activeService = service;
+
+    // Hide placeholder
+    document.getElementById('placeholder').classList.add('hidden');
+
+    // Update hotspots
+    document.querySelectorAll('.hotspot').forEach(h => {
+      h.classList.toggle('active', h.dataset.service === service);
+    });
+
+    // Update detail panels
+    document.querySelectorAll('.detail-content').forEach(d => {
+      d.classList.toggle('active', d.dataset.detail === service);
+    });
+
+    // Update dots
+    document.querySelectorAll('.zone-dot').forEach(d => {
+      d.classList.toggle('active', d.dataset.service === service);
+    });
+
+    // Update floating labels
+    document.querySelectorAll('.floating-label').forEach(l => {
+      l.classList.toggle('active', l.dataset.service === service);
+    });
+  }
+</script>
+</body>
+</html>
