@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
 
@@ -43,16 +43,124 @@ function Stars() {
   );
 }
 
+function MobileReviewStack() {
+  const [active, setActive] = useState(0);
+  const [swiping, setSwiping] = useState(false);
+  const [swipeX, setSwipeX] = useState(0);
+  const touchRef = useRef({ startX: 0, startY: 0 });
+
+  const next = useCallback(() => {
+    setSwiping(true);
+    setSwipeX(-400);
+    setTimeout(() => {
+      setActive((prev) => (prev + 1) % reviews.length);
+      setSwipeX(0);
+      setSwiping(false);
+    }, 300);
+  }, []);
+
+  const prev = useCallback(() => {
+    setSwiping(true);
+    setSwipeX(400);
+    setTimeout(() => {
+      setActive((prev) => (prev - 1 + reviews.length) % reviews.length);
+      setSwipeX(0);
+      setSwiping(false);
+    }, 300);
+  }, []);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchRef.current.startX = e.touches[0].clientX;
+    touchRef.current.startY = e.touches[0].clientY;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (swiping) return;
+      const dx = e.changedTouches[0].clientX - touchRef.current.startX;
+      const dy = e.changedTouches[0].clientY - touchRef.current.startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) next();
+        else prev();
+      }
+    },
+    [swiping, next, prev]
+  );
+
+  return (
+    <div className="md:hidden">
+      <div
+        className="relative h-[220px]"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onClick={() => !swiping && next()}
+      >
+        {reviews.map((review, i) => {
+          const offset = (i - active + reviews.length) % reviews.length;
+          const isTop = offset === 0;
+
+          return (
+            <div
+              key={i}
+              className="absolute inset-0"
+              style={{
+                transform: isTop
+                  ? `translateX(${swiping ? swipeX : 0}px)`
+                  : `translateY(${offset * 12}px) scale(${1 - offset * 0.04})`,
+                opacity: offset > 2 ? 0 : 1 - offset * 0.1,
+                zIndex: reviews.length - offset,
+                transition: swiping
+                  ? "transform 300ms ease-out, opacity 300ms ease-out"
+                  : "transform 400ms ease, opacity 400ms ease",
+                pointerEvents: isTop ? "auto" : "none",
+              }}
+            >
+              <div className="border border-white/[0.06] rounded-sm p-7 h-full">
+                <Stars />
+                <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8]">
+                  &ldquo;{review.text}&rdquo;
+                </p>
+                <div className="mt-5 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
+                    <span className="text-[0.6rem] font-bold text-white/30">
+                      {review.name.split(" ").map((n) => n[0]).join("")}
+                    </span>
+                  </div>
+                  <span className="text-white/30 text-sm font-medium">{review.name}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Dots + counter */}
+      <div className="flex items-center justify-center gap-3 mt-6">
+        <div className="flex gap-2">
+          {reviews.map((_, i) => (
+            <button
+              key={i}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActive(i);
+              }}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === active ? "bg-terracotta w-6" : "bg-white/20"
+              }`}
+              aria-label={`Avis ${i + 1}`}
+            />
+          ))}
+        </div>
+        <span className="text-[0.7rem] text-white/30 font-medium ml-1">
+          {active + 1}/{reviews.length}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function Reviews() {
   const ref = useReveal(0.08);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActive((prev) => (prev + 1) % reviews.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <section ref={ref} id="avis" className="bg-anthracite py-24 md:py-36 overflow-hidden">
@@ -113,31 +221,8 @@ export default function Reviews() {
             ))}
           </div>
 
-          {/* Mobile: single card carousel */}
-          <div className="md:hidden">
-            <div className="border border-white/[0.06] rounded-sm p-7 min-h-[200px]">
-              <Stars />
-              <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8] transition-opacity duration-500">
-                &ldquo;{reviews[active].text}&rdquo;
-              </p>
-              <p className="mt-5 text-white/30 text-sm font-medium">
-                — {reviews[active].name}
-              </p>
-            </div>
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-6">
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    i === active ? "bg-terracotta w-6" : "bg-white/20"
-                  }`}
-                  aria-label={`Avis ${i + 1}`}
-                />
-              ))}
-            </div>
-          </div>
+          {/* Mobile: swipeable card stack */}
+          <MobileReviewStack />
 
           {/* Second row desktop */}
           <div className="hidden md:grid md:grid-cols-3 gap-5 mt-5">

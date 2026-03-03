@@ -101,7 +101,7 @@ function MobileCardStack() {
 
   const next = useCallback(() => {
     setSwiping(true);
-    setSwipeX(400);
+    setSwipeX(-400);
     setTimeout(() => {
       setActive((prev) => (prev + 1) % team.length);
       setSwipeX(0);
@@ -111,7 +111,7 @@ function MobileCardStack() {
 
   const prev = useCallback(() => {
     setSwiping(true);
-    setSwipeX(-400);
+    setSwipeX(400);
     setTimeout(() => {
       setActive((prev) => (prev - 1 + team.length) % team.length);
       setSwipeX(0);
@@ -156,8 +156,8 @@ function MobileCardStack() {
               style={{
                 transform: isTop
                   ? `translateX(${swiping ? swipeX : 0}px)`
-                  : `translateY(${offset * 8}px) scale(${1 - offset * 0.05})`,
-                opacity: offset > 2 ? 0 : 1 - offset * 0.15,
+                  : `translateY(${offset * 12}px) scale(${1 - offset * 0.04})`,
+                opacity: offset > 2 ? 0 : 1 - offset * 0.1,
                 zIndex: team.length - offset,
                 transition: swiping
                   ? "transform 300ms ease-out, opacity 300ms ease-out"
