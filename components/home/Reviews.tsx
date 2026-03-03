@@ -103,7 +103,9 @@ function MobileReviewStack() {
         {reviews.map((review, i) => {
           const offset = (i - active + reviews.length) % reviews.length;
           const isTop = offset === 0;
-          const rot = stackRotations[offset] ?? 0;
+          const hidden = offset > 2;
+          const visOffset = Math.min(offset, 2);
+          const rot = stackRotations[visOffset] ?? 0;
 
           return (
             <div
@@ -112,12 +114,15 @@ function MobileReviewStack() {
               style={{
                 transform: isTop
                   ? `translateX(${swiping ? swipeX : 0}px) rotate(${swiping ? swipeDir * 12 : 0}deg)`
-                  : `translateY(${offset * 14}px) rotate(${rot}deg) scale(${1 - offset * 0.03})`,
-                opacity: offset > 2 ? 0 : 1,
+                  : `translateY(${visOffset * 14}px) rotate(${rot}deg) scale(${1 - visOffset * 0.03})`,
+                opacity: hidden ? 0 : 1,
+                visibility: hidden ? "hidden" : "visible",
                 zIndex: reviews.length - offset,
-                transition: swiping
-                  ? "transform 350ms ease-out, opacity 350ms ease-out"
-                  : "transform 400ms ease, opacity 400ms ease",
+                transition: hidden
+                  ? "none"
+                  : swiping
+                    ? "transform 350ms ease-out, opacity 350ms ease-out"
+                    : "transform 400ms ease, opacity 400ms ease",
                 pointerEvents: isTop ? "auto" : "none",
               }}
             >
