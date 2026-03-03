@@ -52,7 +52,7 @@ function TeamCard({
 }) {
   return (
     <div
-      className={`group relative bg-cream border border-anthracite/[0.06] rounded-sm p-8 md:p-10 hover:border-terracotta/20 transition-all duration-500 overflow-hidden ${className ?? ""}`}
+      className={`group relative bg-cream border border-anthracite/[0.06] rounded-2xl md:rounded-sm p-8 md:p-10 hover:border-terracotta/20 transition-all duration-500 overflow-hidden ${className ?? ""}`}
       style={style}
     >
       <span className="absolute top-4 right-6 font-syne font-800 text-[6rem] leading-none text-anthracite/[0.025] select-none transition-colors duration-500 group-hover:text-terracotta/[0.06]">
@@ -97,26 +97,29 @@ function MobileCardStack() {
   const [active, setActive] = useState(0);
   const [swiping, setSwiping] = useState(false);
   const [swipeX, setSwipeX] = useState(0);
+  const [swipeDir, setSwipeDir] = useState<1 | -1>(-1);
   const touchRef = useRef({ startX: 0, startY: 0 });
 
   const next = useCallback(() => {
     setSwiping(true);
+    setSwipeDir(-1);
     setSwipeX(-400);
     setTimeout(() => {
       setActive((prev) => (prev + 1) % team.length);
       setSwipeX(0);
       setSwiping(false);
-    }, 300);
+    }, 350);
   }, []);
 
   const prev = useCallback(() => {
     setSwiping(true);
+    setSwipeDir(1);
     setSwipeX(400);
     setTimeout(() => {
       setActive((prev) => (prev - 1 + team.length) % team.length);
       setSwipeX(0);
       setSwiping(false);
-    }, 300);
+    }, 350);
   }, []);
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
@@ -137,10 +140,12 @@ function MobileCardStack() {
     [swiping, next, prev]
   );
 
+  const stackRotations = [0, 3, -2.5, 4];
+
   return (
     <div className="md:hidden">
       <div
-        className="relative h-[340px]"
+        className="relative h-[340px] mx-2"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={() => !swiping && next()}
@@ -148,6 +153,7 @@ function MobileCardStack() {
         {team.map((member, i) => {
           const offset = (i - active + team.length) % team.length;
           const isTop = offset === 0;
+          const rot = stackRotations[offset] ?? 0;
 
           return (
             <div
@@ -155,17 +161,22 @@ function MobileCardStack() {
               className="absolute inset-0"
               style={{
                 transform: isTop
-                  ? `translateX(${swiping ? swipeX : 0}px)`
-                  : `translateY(${offset * 12}px) scale(${1 - offset * 0.04})`,
-                opacity: offset > 2 ? 0 : 1 - offset * 0.1,
+                  ? `translateX(${swiping ? swipeX : 0}px) rotate(${swiping ? swipeDir * 12 : 0}deg)`
+                  : `translateY(${offset * 14}px) rotate(${rot}deg) scale(${1 - offset * 0.03})`,
+                opacity: offset > 2 ? 0 : 1,
                 zIndex: team.length - offset,
                 transition: swiping
-                  ? "transform 300ms ease-out, opacity 300ms ease-out"
+                  ? "transform 350ms ease-out, opacity 350ms ease-out"
                   : "transform 400ms ease, opacity 400ms ease",
                 pointerEvents: isTop ? "auto" : "none",
+                filter: offset === 0 ? "none" : `brightness(${1 - offset * 0.08})`,
               }}
             >
-              <TeamCard member={member} index={i} className="h-full" />
+              <TeamCard
+                member={member}
+                index={i}
+                className={`h-full shadow-lg ${isTop ? "shadow-black/10" : "shadow-black/5"}`}
+              />
             </div>
           );
         })}

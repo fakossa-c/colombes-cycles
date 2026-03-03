@@ -47,26 +47,29 @@ function MobileReviewStack() {
   const [active, setActive] = useState(0);
   const [swiping, setSwiping] = useState(false);
   const [swipeX, setSwipeX] = useState(0);
+  const [swipeDir, setSwipeDir] = useState<1 | -1>(-1);
   const touchRef = useRef({ startX: 0, startY: 0 });
 
   const next = useCallback(() => {
     setSwiping(true);
+    setSwipeDir(-1);
     setSwipeX(-400);
     setTimeout(() => {
       setActive((prev) => (prev + 1) % reviews.length);
       setSwipeX(0);
       setSwiping(false);
-    }, 300);
+    }, 350);
   }, []);
 
   const prev = useCallback(() => {
     setSwiping(true);
+    setSwipeDir(1);
     setSwipeX(400);
     setTimeout(() => {
       setActive((prev) => (prev - 1 + reviews.length) % reviews.length);
       setSwipeX(0);
       setSwiping(false);
-    }, 300);
+    }, 350);
   }, []);
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
@@ -87,10 +90,12 @@ function MobileReviewStack() {
     [swiping, next, prev]
   );
 
+  const stackRotations = [0, 3, -2.5, 4, -3, 2.5];
+
   return (
     <div className="md:hidden">
       <div
-        className="relative h-[220px]"
+        className="relative h-[260px] mx-2"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={() => !swiping && next()}
@@ -98,6 +103,7 @@ function MobileReviewStack() {
         {reviews.map((review, i) => {
           const offset = (i - active + reviews.length) % reviews.length;
           const isTop = offset === 0;
+          const rot = stackRotations[offset] ?? 0;
 
           return (
             <div
@@ -105,17 +111,19 @@ function MobileReviewStack() {
               className="absolute inset-0"
               style={{
                 transform: isTop
-                  ? `translateX(${swiping ? swipeX : 0}px)`
-                  : `translateY(${offset * 12}px) scale(${1 - offset * 0.04})`,
-                opacity: offset > 2 ? 0 : 1 - offset * 0.1,
+                  ? `translateX(${swiping ? swipeX : 0}px) rotate(${swiping ? swipeDir * 12 : 0}deg)`
+                  : `translateY(${offset * 14}px) rotate(${rot}deg) scale(${1 - offset * 0.03})`,
+                opacity: offset > 2 ? 0 : 1,
                 zIndex: reviews.length - offset,
                 transition: swiping
-                  ? "transform 300ms ease-out, opacity 300ms ease-out"
+                  ? "transform 350ms ease-out, opacity 350ms ease-out"
                   : "transform 400ms ease, opacity 400ms ease",
                 pointerEvents: isTop ? "auto" : "none",
               }}
             >
-              <div className="border border-white/[0.06] rounded-sm p-7 h-full">
+              <div
+                className={`border border-white/[0.08] rounded-2xl p-7 h-full ${isTop ? "bg-white/[0.06] shadow-lg shadow-black/20" : "bg-white/[0.03] shadow-md shadow-black/10"}`}
+              >
                 <Stars />
                 <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8]">
                   &ldquo;{review.text}&rdquo;
