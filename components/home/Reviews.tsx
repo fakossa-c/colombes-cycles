@@ -122,7 +122,7 @@ function MobileReviewStack() {
               }}
             >
               <div
-                className={`border border-white/[0.08] rounded-2xl p-7 h-full ${isTop ? "bg-white/[0.06] shadow-lg shadow-black/20" : "bg-white/[0.03] shadow-md shadow-black/10"}`}
+                className={`border border-white/[0.08] rounded-2xl p-7 h-full ${isTop ? "bg-[#2a2a2c] shadow-lg shadow-black/20" : "bg-[#242426] shadow-md shadow-black/10"}`}
               >
                 <Stars />
                 <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8]">

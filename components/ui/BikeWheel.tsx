@@ -47,12 +47,15 @@ function MiniWheel({ size = 48 }: { size?: number }) {
 }
 
 
+const darkSections = new Set(["hero", "avis", "cta"]);
+
 export default function ScrollProgress() {
   const lineRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [onDark, setOnDark] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -86,6 +89,7 @@ export default function ScrollProgress() {
             }
           }
           setActiveIndex(current);
+          setOnDark(darkSections.has(sections[current]?.id ?? ""));
           ticking = false;
         });
         ticking = true;
@@ -106,12 +110,12 @@ export default function ScrollProgress() {
       aria-hidden="true"
     >
       {/* Track line */}
-      <div className="absolute left-[23px] top-[10vh] bottom-[10vh] w-[2px] bg-anthracite/[0.05]" />
+      <div className={`absolute left-[23px] top-[10vh] bottom-[10vh] w-[2px] transition-colors duration-500 ${onDark ? "bg-white/[0.08]" : "bg-anthracite/[0.05]"}`} />
 
       {/* Progress fill */}
       <div
-        className="absolute left-[23px] top-[10vh] w-[2px] bg-terracotta/30 origin-top"
-        style={{ height: `${progress * 80}vh`, transition: "none" }}
+        className={`absolute left-[23px] top-[10vh] w-[2px] origin-top transition-colors duration-500 ${onDark ? "bg-white/30" : "bg-terracotta/30"}`}
+        style={{ height: `${progress * 80}vh`, transition: "height 0s" }}
       />
 
       {/* Moving wheel */}
@@ -124,9 +128,11 @@ export default function ScrollProgress() {
       >
         <div
           ref={wheelRef}
-          className="text-terracotta will-change-transform"
+          className={`will-change-transform transition-colors duration-500 ${onDark ? "text-white" : "text-terracotta"}`}
           style={{
-            filter: "drop-shadow(0 0 12px rgba(196,98,45,0.35))",
+            filter: onDark
+              ? "drop-shadow(0 0 12px rgba(255,255,255,0.2))"
+              : "drop-shadow(0 0 12px rgba(196,98,45,0.35))",
           }}
         >
           <MiniWheel size={48} />
@@ -151,10 +157,10 @@ export default function ScrollProgress() {
               <div
                 className={`h-[2px] transition-all duration-500 ${
                   isActive
-                    ? "w-[20px] bg-terracotta"
+                    ? `w-[20px] ${onDark ? "bg-white" : "bg-terracotta"}`
                     : isPast
-                    ? "w-[12px] bg-terracotta/25"
-                    : "w-[8px] bg-anthracite/8"
+                    ? `w-[12px] ${onDark ? "bg-white/25" : "bg-terracotta/25"}`
+                    : `w-[8px] ${onDark ? "bg-white/10" : "bg-anthracite/8"}`
                 }`}
               />
             </div>
@@ -163,10 +169,10 @@ export default function ScrollProgress() {
             <span
               className={`font-syne font-700 text-[0.75rem] tracking-[0.15em] uppercase whitespace-nowrap transition-all duration-500 ml-3 ${
                 isActive
-                  ? "text-terracotta opacity-100 translate-x-0"
+                  ? `${onDark ? "text-white" : "text-terracotta"} opacity-100 translate-x-0`
                   : isPast
-                  ? "text-anthracite/25 opacity-100 translate-x-0"
-                  : "text-anthracite/8 opacity-0 translate-x-[-6px]"
+                  ? `${onDark ? "text-white/25" : "text-anthracite/25"} opacity-100 translate-x-0`
+                  : `${onDark ? "text-white/10" : "text-anthracite/8"} opacity-0 translate-x-[-6px]`
               }`}
             >
               {section.label}
