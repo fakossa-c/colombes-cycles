@@ -58,6 +58,14 @@ export default function Hero() {
         CYCLES
       </div>
 
+      {/* COLOMBES — vertical crop, visible desktop only */}
+      <div
+        className="absolute left-[-3%] bottom-[-12%] font-syne font-800 text-[22vw] leading-[0.85] text-white/[0.04] select-none whitespace-nowrap hidden md:block"
+        data-speed="-0.05"
+      >
+        COLOMBES
+      </div>
+
       <div
         className="relative max-w-7xl mx-auto px-6 md:px-10 py-20 md:py-40 lg:py-48 w-full"
         style={{ opacity: "var(--hero-fade, 1)" }}
