@@ -29,7 +29,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <nav aria-label="Fil d'Ariane" className="mb-8">
+      <nav aria-label="Fil d'Ariane" className="mb-5 md:mb-8">
         <ol className="flex flex-wrap items-center gap-1.5 text-[0.75rem] tracking-wide text-anthracite/40">
           {items.map((item, index) => (
             <li key={index} className="flex items-center gap-1.5">

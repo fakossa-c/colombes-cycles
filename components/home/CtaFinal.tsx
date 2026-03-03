@@ -7,7 +7,7 @@ export default function CtaFinal() {
   const ref = useReveal(0.2);
 
   return (
-    <section ref={ref} id="cta" className="relative bg-ivory py-28 md:py-40 overflow-hidden">
+    <section ref={ref} id="cta" className="relative bg-ivory py-24 md:py-36 overflow-hidden">
       <div className="relative max-w-4xl mx-auto px-6 md:px-10 text-center">
         <div className="reveal">
           <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-terracotta mb-6">

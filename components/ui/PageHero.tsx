@@ -9,7 +9,7 @@ type PageHeroProps = {
 
 export default function PageHero({ title, subtitle, tag, breadcrumbs }: PageHeroProps) {
   return (
-    <section className="bg-ivory py-16 md:py-36">
+    <section className="bg-ivory pt-10 pb-14 md:py-36">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         {breadcrumbs && <Breadcrumb items={breadcrumbs} />}
 

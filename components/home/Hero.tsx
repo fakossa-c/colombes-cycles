@@ -37,7 +37,7 @@ export default function Hero() {
     <section
       ref={ref}
       id="hero"
-      className="relative bg-anthracite text-white overflow-hidden min-h-[100svh] flex items-end md:items-center"
+      className="relative bg-anthracite text-white overflow-hidden min-h-[100svh] flex items-center"
     >
       {/* Subtle grid */}
       <div
