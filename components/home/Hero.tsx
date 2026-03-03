@@ -60,7 +60,7 @@ export default function Hero() {
 
       {/* COLOMBES — vertical crop, visible desktop only */}
       <div
-        className="absolute left-[-3%] bottom-[-12%] font-syne font-800 text-[22vw] leading-[0.85] text-white/[0.04] select-none whitespace-nowrap hidden md:block"
+        className="absolute left-[-3%] bottom-[-12%] font-syne font-800 text-[28vw] md:text-[22vw] leading-[0.85] text-white/[0.07] select-none whitespace-nowrap"
         data-speed="-0.05"
       >
         COLOMBES
