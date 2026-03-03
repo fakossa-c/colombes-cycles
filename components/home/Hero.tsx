@@ -52,7 +52,7 @@ export default function Hero() {
 
       {/* Large background text — parallax */}
       <div
-        className="absolute right-[-5%] top-[15%] font-syne font-800 text-[18vw] leading-none text-white/[0.15] select-none whitespace-nowrap"
+        className="absolute right-[-5%] top-[15%] font-syne font-800 text-[18vw] leading-none text-white/[0.07] select-none whitespace-nowrap"
         data-speed="0.08"
       >
         CYCLES
