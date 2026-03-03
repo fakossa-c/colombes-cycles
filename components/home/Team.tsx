@@ -99,9 +99,9 @@ function MobileCardStack() {
   const [swipeX, setSwipeX] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0 });
 
-  const next = useCallback(() => {
+  const advance = useCallback((dir: -1 | 1) => {
     setSwiping(true);
-    setSwipeX(-400);
+    setSwipeX(dir * 400);
     setTimeout(() => {
       setActive((prev) => (prev + 1) % team.length);
       setSwipeX(0);
@@ -120,10 +120,10 @@ function MobileCardStack() {
       const dx = e.changedTouches[0].clientX - touchRef.current.startX;
       const dy = e.changedTouches[0].clientY - touchRef.current.startY;
       if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-        next();
+        advance(dx < 0 ? -1 : 1);
       }
     },
-    [swiping, next]
+    [swiping, advance]
   );
 
   const stackRotations = [0, 3, -2.5, 4];
@@ -134,7 +134,7 @@ function MobileCardStack() {
         className="relative h-[340px] mx-2"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        onClick={() => !swiping && next()}
+        onClick={() => !swiping && advance(-1)}
       >
         {team.map((member, i) => {
           const offset = (i - active + team.length) % team.length;
@@ -149,7 +149,7 @@ function MobileCardStack() {
               className="absolute inset-0"
               style={{
                 transform: isTop
-                  ? `translateX(${swiping ? swipeX : 0}px) rotate(${swiping ? -12 : 0}deg)`
+                  ? `translateX(${swiping ? swipeX : 0}px) rotate(${swiping ? (swipeX < 0 ? -12 : 12) : 0}deg)`
                   : `translateY(${visOffset * 14}px) rotate(${rot}deg) scale(${1 - visOffset * 0.03})`,
                 opacity: hidden ? 0 : 1,
                 visibility: hidden ? "hidden" : "visible",
