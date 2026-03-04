@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
 import { team, type TeamMember } from "@/lib/data/team";
@@ -169,17 +169,30 @@ function MobileCardStack() {
 function DesktopTeamSpotlight() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [paused, setPaused] = useState(false);
 
-  const selectMember = (i: number) => {
-    if (i === activeIndex) return;
+  const go = useCallback((i: number) => {
     setVisible(false);
     setTimeout(() => { setActiveIndex(i); setVisible(true); }, 300);
-  };
+  }, []);
+
+  const next = useCallback(() => go((activeIndex + 1) % team.length), [activeIndex, go]);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(next, 2000);
+    return () => clearInterval(id);
+  }, [paused, next]);
 
   const member = team[activeIndex];
 
   return (
-    <div className="hidden md:flex reveal" style={{ gap: 0 }}>
+    <div
+      className="hidden md:flex reveal"
+      style={{ gap: 0 }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       {/* Left: featured card (65%) */}
       <div
         className="flex-[0_0_65%] bg-cream border border-anthracite/[0.06] rounded-sm p-12 relative overflow-hidden"
@@ -221,7 +234,7 @@ function DesktopTeamSpotlight() {
           return (
             <button
               key={i}
-              onClick={() => selectMember(i)}
+              onClick={() => go(i)}
               className={`flex items-center gap-4 py-5 text-left transition-all duration-300 border-l-2 pl-5 ${
                 isActive
                   ? "border-terracotta"

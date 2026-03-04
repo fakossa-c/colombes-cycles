@@ -147,7 +147,7 @@ function DesktopReviewTheater() {
 
   useEffect(() => {
     if (paused) return;
-    const id = setInterval(next, 5000);
+    const id = setInterval(next, 2000);
     return () => clearInterval(id);
   }, [paused, next]);
 
