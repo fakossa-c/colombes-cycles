@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__chrome-devtools__performance_start_trace"
+    ]
+  }
+}
