@@ -1,15 +1,8 @@
-export default function TrustBand() {
-  const items = [
-    "4,8★ sur 271 avis Google",
-    "Certifié BOSCH eBike",
-    "15 ans de métier",
-    "1ère révision offerte",
-    "Toutes marques acceptées",
-    "Orbea · Peugeot · Gitane · Velodeville",
-  ];
+import { trustItems } from "@/lib/data/trust-items";
 
+export default function TrustBand() {
   // Duplicate for seamless loop
-  const track = [...items, ...items];
+  const track = [...trustItems, ...trustItems];
 
   return (
     <section className="bg-anthracite border-t border-white/[0.06] overflow-hidden py-5">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageHero from "@/components/ui/PageHero";
 import CtaBlock from "@/components/ui/CtaBlock";
-import { categories, getCategoryBySlug } from "@/lib/categories";
+import { categories, getCategoryBySlug } from "@/lib/data/categories";
 
 type Props = {
   params: Promise<{ category: string }>;

@@ -1,6 +1,6 @@
 # Story 1.5: Centraliser les donnees dans lib/data/
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -32,58 +32,58 @@ So that les donnees soient maintenables, typees et pretes pour une future migrat
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Creer le repertoire lib/data/ et le fichier index (AC: #1)
-  - [ ] Creer `lib/data/` si inexistant
-  - [ ] ATTENTION OneDrive : utiliser `cp` + `rm` au lieu de `mv` pour eviter les locks
+- [x] Task 1 — Creer le repertoire lib/data/ et le fichier index (AC: #1)
+  - [x] Creer `lib/data/` si inexistant
+  - [x] ATTENTION OneDrive : utiliser `cp` + `rm` au lieu de `mv` pour eviter les locks
 
-- [ ] Task 2 — Deplacer lib/categories.ts vers lib/data/categories.ts (AC: #3)
-  - [ ] Copier `lib/categories.ts` vers `lib/data/categories.ts`
-  - [ ] Supprimer `lib/categories.ts`
-  - [ ] Mettre a jour les imports dans :
+- [x] Task 2 — Deplacer lib/categories.ts vers lib/data/categories.ts (AC: #3)
+  - [x] Copier `lib/categories.ts` vers `lib/data/categories.ts`
+  - [x] Supprimer `lib/categories.ts`
+  - [x] Mettre a jour les imports dans :
     - `app/(site)/nos-velos/page.tsx` : `@/lib/categories` -> `@/lib/data/categories`
     - `app/(site)/nos-velos/[category]/page.tsx` : `@/lib/categories` -> `@/lib/data/categories`
     - Tout autre fichier qui importe depuis `@/lib/categories` (faire un grep)
 
-- [ ] Task 3 — Creer lib/data/team.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `team` de `components/home/Team.tsx` (lignes 7-40)
-  - [ ] Creer le type `TeamMember` et l'exporter
-  - [ ] Exporter `const team: TeamMember[]`
-  - [ ] Dans Team.tsx, remplacer le tableau inline par `import { team, type TeamMember } from "@/lib/data/team"`
+- [x] Task 3 — Creer lib/data/team.ts (AC: #1, #2)
+  - [x] Extraire le tableau `team` de `components/home/Team.tsx` (lignes 7-40)
+  - [x] Creer le type `TeamMember` et l'exporter
+  - [x] Exporter `const team: TeamMember[]`
+  - [x] Dans Team.tsx, remplacer le tableau inline par `import { team, type TeamMember } from "@/lib/data/team"`
 
-- [ ] Task 4 — Creer lib/data/reviews.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `reviews` de `components/home/Reviews.tsx` (lignes 7-32)
-  - [ ] Creer le type `Review` et l'exporter
-  - [ ] Exporter `const reviews: Review[]`
-  - [ ] Dans Reviews.tsx, remplacer le tableau inline par l'import
+- [x] Task 4 — Creer lib/data/reviews.ts (AC: #1, #2)
+  - [x] Extraire le tableau `reviews` de `components/home/Reviews.tsx` (lignes 7-32)
+  - [x] Creer le type `Review` et l'exporter
+  - [x] Exporter `const reviews: Review[]`
+  - [x] Dans Reviews.tsx, remplacer le tableau inline par l'import
 
-- [ ] Task 5 — Creer lib/data/services.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `services` et le type `ServiceKey` de `app/(site)/reparations/ServicesGrid.tsx` (lignes 9-72)
-  - [ ] Extraire aussi le tableau `labels` (lignes 74-85) — il est couple aux services
-  - [ ] Creer les types `ServiceKey`, `Service`, `ServiceLabel` et les exporter
-  - [ ] Dans ServicesGrid.tsx, remplacer par les imports
+- [x] Task 5 — Creer lib/data/services.ts (AC: #1, #2)
+  - [x] Extraire le tableau `services` et le type `ServiceKey` de `app/(site)/reparations/ServicesGrid.tsx` (lignes 9-72)
+  - [x] Extraire aussi le tableau `labels` (lignes 74-85) — il est couple aux services (renommé `serviceLabels`)
+  - [x] Creer les types `ServiceKey`, `Service`, `ServiceLabel` et les exporter
+  - [x] Dans ServicesGrid.tsx, remplacer par les imports
 
-- [ ] Task 6 — Creer lib/data/pricing.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `pricingData` de `app/(site)/reparations/page.tsx` (lignes 17-32)
-  - [ ] Creer le type `PricingRow` et l'exporter
-  - [ ] Dans reparations/page.tsx, remplacer par l'import
+- [x] Task 6 — Creer lib/data/pricing.ts (AC: #1, #2)
+  - [x] Extraire le tableau `pricingData` de `app/(site)/reparations/page.tsx` (lignes 17-32)
+  - [x] Creer le type `PricingRow` et l'exporter
+  - [x] Dans reparations/page.tsx, remplacer par l'import
 
-- [ ] Task 7 — Creer lib/data/brands.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `brands` de `app/(site)/a-propos/page.tsx` (lignes 17-38)
-  - [ ] Creer le type `Brand` et l'exporter
-  - [ ] Dans a-propos/page.tsx, remplacer par l'import
+- [x] Task 7 — Creer lib/data/brands.ts (AC: #1, #2)
+  - [x] Extraire le tableau `brands` de `app/(site)/a-propos/page.tsx` (lignes 17-38)
+  - [x] Creer le type `Brand` et l'exporter
+  - [x] Dans a-propos/page.tsx, remplacer par l'import
 
-- [ ] Task 8 — Creer lib/data/trust-items.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `items` de `components/home/TrustBand.tsx` (lignes 2-9)
-  - [ ] Exporter `const trustItems: string[]`
-  - [ ] Dans TrustBand.tsx, remplacer par l'import
+- [x] Task 8 — Creer lib/data/trust-items.ts (AC: #1, #2)
+  - [x] Extraire le tableau `items` de `components/home/TrustBand.tsx` (lignes 2-9)
+  - [x] Exporter `const trustItems: string[]`
+  - [x] Dans TrustBand.tsx, remplacer par l'import
 
-- [ ] Task 9 — Creer lib/data/blog-posts.ts (AC: #1, #2)
-  - [ ] Extraire le tableau `articles` et le type `Article` de `components/blog/BlogGrid.tsx` (lignes 5-46)
-  - [ ] Creer le type `BlogArticle` (renommer pour eviter collision avec le type HTML Article)
-  - [ ] Dans BlogGrid.tsx, remplacer par l'import
+- [x] Task 9 — Creer lib/data/blog-posts.ts (AC: #1, #2)
+  - [x] Extraire le tableau `articles` et le type `Article` de `components/blog/BlogGrid.tsx` (lignes 5-46)
+  - [x] Creer le type `BlogArticle` (renommer pour eviter collision avec le type HTML Article)
+  - [x] Dans BlogGrid.tsx, remplacer par l'import
 
-- [ ] Task 10 — Creer lib/data/site-config.ts (AC: #1, #5)
-  - [ ] Centraliser les constantes metier repetees dans le codebase :
+- [x] Task 10 — Creer lib/data/site-config.ts (AC: #1, #5)
+  - [x] Centraliser les constantes metier repetees dans le codebase :
     - Telephone : `01 42 42 66 02` (utilise dans contact/page.tsx, Topbar.tsx, Footer.tsx)
     - Adresse : `12 Av. Henri Barbusse, 92700 Colombes`
     - Horaires : mardi-samedi 9h-19h, dimanche-lundi ferme
@@ -91,12 +91,12 @@ So that les donnees soient maintenables, typees et pretes pour une future migrat
     - Note Google : `4.8` sur `271` avis
     - Nom entreprise : `Colombes Cycles`
     - URL : `https://www.colombes-cycles.fr`
-  - [ ] NE PAS encore modifier les composants qui utilisent ces valeurs hardcodees — juste creer le module source de verite. L'adoption dans les composants peut se faire progressivement
+  - [x] NE PAS encore modifier les composants qui utilisent ces valeurs hardcodees — juste creer le module source de verite. L'adoption dans les composants peut se faire progressivement
 
-- [ ] Task 11 — Verifier build et rendu (AC: #4, #5)
-  - [ ] `npm run build` reussit
-  - [ ] Verifier visuellement que les pages affichent les memes donnees qu'avant
-  - [ ] Grep pour confirmer qu'aucune donnee metier n'est dupliquee entre modules
+- [x] Task 11 — Verifier build et rendu (AC: #4, #5)
+  - [x] `npm run build` reussit
+  - [x] Verifier visuellement que les pages affichent les memes donnees qu'avant
+  - [x] Grep pour confirmer qu'aucune donnee metier n'est dupliquee entre modules
 
 ## Dev Notes
 
@@ -274,12 +274,53 @@ export const siteConfig = {
 ## Dev Agent Record
 
 ### Agent Model Used
-{{agent_model_name_version}}
+
+claude-sonnet-4-6
 
 ### Debug Log References
 
+Aucun blocage. Implémentation directe conforme aux Dev Notes.
+
+Note : `labels` dans ServicesGrid.tsx renommé `serviceLabels` dans lib/data/services.ts pour éviter la collision avec le nom générique `labels`. ServicesGrid.tsx re-exporte `ServiceKey` via `export type { ServiceKey }` pour rétrocompatibilité avec BikeInteractiveSvg.tsx.
+
 ### Completion Notes List
+
+- ✅ `lib/data/` créé avec 9 modules TypeScript typés
+- ✅ `lib/categories.ts` déplacé → `lib/data/categories.ts` (type + const + getCategoryBySlug préservés)
+- ✅ `lib/data/team.ts` — type TeamMember + const team (4 membres)
+- ✅ `lib/data/reviews.ts` — type Review + const reviews (6 avis)
+- ✅ `lib/data/services.ts` — types ServiceKey/Service/ServiceLabel + consts services/serviceLabels
+- ✅ `lib/data/pricing.ts` — type PricingRow + const pricingData (14 lignes)
+- ✅ `lib/data/brands.ts` — type Brand + const brands (4 marques)
+- ✅ `lib/data/trust-items.ts` — const trustItems: string[] (6 items)
+- ✅ `lib/data/blog-posts.ts` — type BlogArticle + const articles (4 articles)
+- ✅ `lib/data/site-config.ts` — constantes métier centralisées (as const)
+- ✅ 9 composants/pages mis à jour avec imports depuis lib/data/
+- ✅ `npm run build` réussi (16/16 pages statiques générées)
+- ✅ Aucune donnée inline résiduelle dans les composants (grep vide)
 
 ### Change Log
 
+- 2026-03-04 : Centralisation des données métier dans lib/data/ — 9 modules créés, 9 composants refactorisés, lib/categories.ts déplacé (Story 1.5)
+
 ### File List
+
+- `lib/categories.ts` (SUPPRIMÉ)
+- `lib/data/categories.ts` (CRÉÉ)
+- `lib/data/team.ts` (CRÉÉ)
+- `lib/data/reviews.ts` (CRÉÉ)
+- `lib/data/services.ts` (CRÉÉ)
+- `lib/data/pricing.ts` (CRÉÉ)
+- `lib/data/brands.ts` (CRÉÉ)
+- `lib/data/trust-items.ts` (CRÉÉ)
+- `lib/data/blog-posts.ts` (CRÉÉ)
+- `lib/data/site-config.ts` (CRÉÉ)
+- `app/(site)/nos-velos/page.tsx` (MODIFIÉ)
+- `app/(site)/nos-velos/[category]/page.tsx` (MODIFIÉ)
+- `components/home/Team.tsx` (MODIFIÉ)
+- `components/home/Reviews.tsx` (MODIFIÉ)
+- `app/(site)/reparations/ServicesGrid.tsx` (MODIFIÉ)
+- `app/(site)/reparations/page.tsx` (MODIFIÉ)
+- `app/(site)/a-propos/page.tsx` (MODIFIÉ)
+- `components/home/TrustBand.tsx` (MODIFIÉ)
+- `components/blog/BlogGrid.tsx` (MODIFIÉ)

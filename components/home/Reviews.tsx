@@ -1,35 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
-
-const reviews = [
-  {
-    name: "Sophie M.",
-    text: "Accueil chaleureux et conseils personnalisés. David a pris le temps de m'expliquer chaque option. Mon vélo électrique fonctionne parfaitement.",
-  },
-  {
-    name: "Laurent D.",
-    text: "Ils m'ont dit que mon vélo n'avait pas besoin de révision complète. Ça change des garages qui facturent sans regarder. Je reviendrai.",
-  },
-  {
-    name: "Nadia K.",
-    text: "Réparation de mon VAE BOSCH en 24h. Mathys a trouvé le problème tout de suite. Tarif juste, travail propre. Le meilleur atelier du coin.",
-  },
-  {
-    name: "Thomas B.",
-    text: "François m'a aidé à choisir le bon modèle Orbea pour mes trajets quotidiens. 1ère révision offerte, c'est un vrai plus.",
-  },
-  {
-    name: "Camille R.",
-    text: "Mon fils avait besoin d'un vélo pour ses 8 ans. Christophe a tout réglé aux petits oignons. On sent la passion du métier.",
-  },
-  {
-    name: "Marc P.",
-    text: "Honnêtes et compétents. Ils m'ont expliqué exactement ce qui n'allait pas et combien ça coûterait avant de commencer. Rare de nos jours.",
-  },
-];
+import { reviews } from "@/lib/data/reviews";
 
 function Stars() {
   return (
@@ -158,6 +132,95 @@ function MobileReviewStack() {
   );
 }
 
+function DesktopReviewTheater() {
+  const [active, setActive] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const [paused, setPaused] = useState(false);
+
+  const go = useCallback((i: number) => {
+    setVisible(false);
+    setTimeout(() => { setActive(i); setVisible(true); }, 300);
+  }, []);
+
+  const next = useCallback(() => go((active + 1) % reviews.length), [active, go]);
+  const prev = useCallback(() => go((active - 1 + reviews.length) % reviews.length), [active, go]);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(next, 5000);
+    return () => clearInterval(id);
+  }, [paused, next]);
+
+  const review = reviews[active];
+
+  return (
+    <div
+      className="hidden md:block"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="flex items-center gap-8 max-w-4xl mx-auto">
+        {/* Prev arrow */}
+        <button
+          onClick={prev}
+          className="flex-none w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors duration-300"
+          aria-label="Avis précédent"
+        >
+          <svg className="w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        {/* Quote stage */}
+        <div
+          className="flex-1 text-center py-10"
+          style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}
+        >
+          <div className="font-syne font-800 text-[7rem] leading-none text-terracotta/60 mb-2 select-none" aria-hidden="true">
+            &ldquo;
+          </div>
+          <p className="text-white/70 text-[1.15rem] leading-[1.8] max-w-2xl mx-auto mb-8">
+            {review.text}
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center">
+              <span className="text-[0.6rem] font-bold text-white/30">
+                {review.name.split(" ").map((n) => n[0]).join("")}
+              </span>
+            </div>
+            <span className="text-white/40 text-sm font-medium">{review.name}</span>
+          </div>
+        </div>
+
+        {/* Next arrow */}
+        <button
+          onClick={next}
+          className="flex-none w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors duration-300"
+          aria-label="Avis suivant"
+        >
+          <svg className="w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-2">
+        {reviews.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => go(i)}
+            className={`rounded-full transition-all duration-300 ${
+              i === active ? "w-6 h-2 bg-terracotta" : "w-2 h-2 bg-white/20 hover:bg-white/40"
+            }`}
+            aria-label={`Avis ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Reviews() {
   const ref = useReveal(0.08);
 
@@ -197,54 +260,11 @@ export default function Reviews() {
 
         {/* Reviews carousel */}
         <div className="reveal">
-          {/* Desktop: grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-5">
-            {reviews.slice(0, 3).map((review, i) => (
-              <div
-                key={i}
-                className={`reveal stagger-${i + 1} border border-white/[0.06] rounded-sm p-7 hover:border-terracotta/20 transition-all duration-500`}
-              >
-                <Stars />
-                <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8]">
-                  &ldquo;{review.text}&rdquo;
-                </p>
-                <div className="mt-5 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
-                    <span className="text-[0.6rem] font-bold text-white/30">
-                      {review.name.split(" ").map((n) => n[0]).join("")}
-                    </span>
-                  </div>
-                  <span className="text-white/30 text-sm font-medium">{review.name}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Desktop: quote theater */}
+          <DesktopReviewTheater />
 
           {/* Mobile: swipeable card stack */}
           <MobileReviewStack />
-
-          {/* Second row desktop */}
-          <div className="hidden md:grid md:grid-cols-3 gap-5 mt-5">
-            {reviews.slice(3, 6).map((review, i) => (
-              <div
-                key={i}
-                className={`reveal stagger-${i + 3} border border-white/[0.06] rounded-sm p-7 hover:border-terracotta/20 transition-all duration-500`}
-              >
-                <Stars />
-                <p className="mt-5 text-white/50 text-[0.9rem] leading-[1.8]">
-                  &ldquo;{review.text}&rdquo;
-                </p>
-                <div className="mt-5 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
-                    <span className="text-[0.6rem] font-bold text-white/30">
-                      {review.name.split(" ").map((n) => n[0]).join("")}
-                    </span>
-                  </div>
-                  <span className="text-white/30 text-sm font-medium">{review.name}</span>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 # Story 1.6: Creer les pages error.tsx et not-found.tsx
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -28,42 +28,42 @@ So that je puisse facilement revenir vers le contenu du site.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Creer app/not-found.tsx (AC: #1)
-  - [ ] Creer `app/not-found.tsx` a la RACINE de app/ (pas dans (site)/)
-  - [ ] Design : fond cream, texte anthracite, accents terracotta
-  - [ ] Typo : Syne pour les titres, Inter pour le corps
-  - [ ] Contenu :
+- [x] Task 1 — Creer app/not-found.tsx (AC: #1)
+  - [x] Creer `app/not-found.tsx` a la RACINE de app/ (pas dans (site)/)
+  - [x] Design : fond cream, texte anthracite, accents terracotta
+  - [x] Typo : Syne pour les titres, Inter pour le corps
+  - [x] Contenu :
     - Grand "404" decoratif en Syne font-800 tres grande taille, opacity faible
     - Titre : "Page introuvable" en Syne font-700
     - Sous-titre : "L'adresse que vous avez suivie ne mene nulle part. Ca arrive."
     - 4 liens de navigation : Accueil (/), Nos Velos (/nos-velos), Reparations (/reparations), Contact (/contact)
     - Les liens utilisent le composant Button existant ou un style similaire
-  - [ ] NE PAS inclure Topbar/Navbar/Footer — ils sont dans le layout (site) qui sera rendu autour
-  - [ ] ATTENTION : `not-found.tsx` a la racine de app/ est utilise comme fallback global par Next.js
-  - [ ] Verifier si le layout (site) est applique quand on accede a une URL sous (site)/ — si oui, Navbar sera presente
+  - [x] NE PAS inclure Topbar/Navbar/Footer — ils sont dans le layout (site) qui sera rendu autour
+  - [x] ATTENTION : `not-found.tsx` a la racine de app/ est utilise comme fallback global par Next.js
+  - [x] Verifier si le layout (site) est applique quand on accede a une URL sous (site)/ — si oui, Navbar sera presente
 
-- [ ] Task 2 — Creer app/error.tsx (AC: #2)
-  - [ ] Creer `app/error.tsx` a la RACINE de app/
-  - [ ] DOIT etre "use client" — c'est une exigence Next.js pour error.tsx
-  - [ ] Props : `{ error: Error & { digest?: string }; reset: () => void }`
-  - [ ] Design : meme charte que not-found (cream/anthracite/terracotta)
-  - [ ] Contenu :
+- [x] Task 2 — Creer app/error.tsx (AC: #2)
+  - [x] Creer `app/error.tsx` a la RACINE de app/
+  - [x] DOIT etre "use client" — c'est une exigence Next.js pour error.tsx
+  - [x] Props : `{ error: Error & { digest?: string }; reset: () => void }`
+  - [x] Design : meme charte que not-found (cream/anthracite/terracotta)
+  - [x] Contenu :
     - Titre : "Quelque chose s'est mal passe." en Syne font-700
     - Sous-titre : "Une erreur inattendue est survenue. On s'en occupe."
     - Bouton "Reessayer" qui appelle `reset()`
     - Bouton "Retour a l'accueil" qui utilise `<Link href="/">`
-  - [ ] NE PAS afficher le message d'erreur technique au visiteur (securite)
-  - [ ] Logger l'erreur en console pour le debug (`console.error(error)` dans un useEffect)
+  - [x] NE PAS afficher le message d'erreur technique au visiteur (securite)
+  - [x] Logger l'erreur en console pour le debug (`console.error(error)` dans un useEffect)
 
-- [ ] Task 3 — Creer app/(site)/not-found.tsx optionnel (AC: #1)
-  - [ ] Si le layout (site) n'est PAS applique au not-found.tsx global, creer un not-found specifique dans (site)/
-  - [ ] Alternative : tester d'abord avec le global. Next.js App Router applique le layout parent le plus proche.
-  - [ ] Pour les URLs sous (site)/ (ex: /une-page-inexistante), le layout (site) avec Navbar/Footer SERA applique automatiquement par Next.js si not-found.tsx est dans app/
+- [x] Task 3 — Creer app/(site)/not-found.tsx optionnel (AC: #1)
+  - [x] Si le layout (site) n'est PAS applique au not-found.tsx global, creer un not-found specifique dans (site)/
+  - [x] Alternative : tester d'abord avec le global. Next.js App Router applique le layout parent le plus proche.
+  - [x] Pour les URLs sous (site)/ (ex: /une-page-inexistante), le layout (site) avec Navbar/Footer SERA applique automatiquement par Next.js si not-found.tsx est dans app/
 
-- [ ] Task 4 — Verifier le build et les pages (AC: #3)
-  - [ ] `npm run build` reussit
-  - [ ] Tester en dev : naviguer vers une URL inexistante, verifier que not-found s'affiche
-  - [ ] Tester error.tsx est plus difficile — on peut temporairement throw une erreur dans un composant
+- [x] Task 4 — Verifier le build et les pages (AC: #3)
+  - [x] `npm run build` reussit
+  - [x] Tester en dev : naviguer vers une URL inexistante, verifier que not-found s'affiche
+  - [x] Tester error.tsx est plus difficile — on peut temporairement throw une erreur dans un composant
 
 ## Dev Notes
 
@@ -251,12 +251,28 @@ export default function Error({
 ## Dev Agent Record
 
 ### Agent Model Used
-{{agent_model_name_version}}
+claude-sonnet-4-6
 
 ### Debug Log References
 
+_Aucun blocage rencontré._
+
 ### Completion Notes List
+
+- ✅ `app/not-found.tsx` créé — page 404 globale autonome, design system complet (cream/anthracite/terracotta, Syne/Inter), 4 liens de navigation sans dépendance Navbar/Footer
+- ✅ `app/error.tsx` créé — "use client", props `{error, reset}`, bouton "Réessayer" → `reset()`, bouton "Retour à l'accueil", `console.error` dans `useEffect`, pas d'exposition du message d'erreur
+- ✅ `app/(site)/not-found.tsx` créé — version légère (min-h-[70vh]) intégrée dans le layout (site) avec Navbar/Footer automatiques, utilisée quand `notFound()` est appelé depuis une page du groupe
+- ✅ Build `npm run build` réussi sans erreur (16 pages générées)
+- ✅ ESLint 0 erreur sur les nouveaux fichiers (erreurs pre-existantes dans Services.tsx et Team.tsx non liées à cette story)
+- Note: `hover:bg-terracotta-dark` remplacé par `hover:bg-terracotta/80` (classe `terracotta-dark` non définie dans le design system)
 
 ### Change Log
 
+- 2026-03-04 : Implémentation story 1.6 — création pages error.tsx et not-found.tsx (global + site)
+- 2026-03-04 : Code review — 4 issues MEDIUM corrigés : accents labels nav (M1), branding footer (site)/not-found (M3), aria-hidden SVG error.tsx (M4)
+
 ### File List
+
+- `app/not-found.tsx` — CRÉÉ (page 404 globale, design system, liens navigation)
+- `app/error.tsx` — CRÉÉ (page erreur runtime, "use client", boutons reset/accueil)
+- `app/(site)/not-found.tsx` — CRÉÉ (page 404 dans route group site, layout Navbar/Footer automatique)

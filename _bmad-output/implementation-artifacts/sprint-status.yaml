@@ -47,7 +47,7 @@ development_status:
   1-3-corriger-bugs-css-composants-ui: ready-for-dev
   1-4-corriger-liens-blog-ajouter-usereveal: ready-for-dev
   1-5-centraliser-donnees-lib-data: ready-for-dev
-  1-6-creer-pages-error-not-found: ready-for-dev
+  1-6-creer-pages-error-not-found: done
   1-7-configurer-next-config-headers-securite: done
   epic-1-retrospective: optional
 

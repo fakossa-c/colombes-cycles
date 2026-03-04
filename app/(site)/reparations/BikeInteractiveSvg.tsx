@@ -1,4 +1,4 @@
-import { type ServiceKey } from "./ServicesGrid";
+import { type ServiceKey } from "@/lib/data/services";
 
 type Props = {
   active: ServiceKey;

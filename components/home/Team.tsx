@@ -3,41 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
-
-const team = [
-  {
-    name: "David",
-    surname: "Thibault",
-    role: "Fondateur · Gérant",
-    description:
-      "Quinze ans plus tard, il connaît encore chaque client par son prénom, et souvent aussi par son vélo.",
-    accent: "C'est lui qui a posé les règles de la maison.",
-  },
-  {
-    name: "François",
-    surname: "",
-    role: "Technicien composants",
-    description:
-      "Groupes Shimano, géométrie de cadre. Il s'y connaît avec une précision qui rassure les passionnés.",
-    accent: "Et il sait expliquer simplement à ceux qui débutent.",
-  },
-  {
-    name: "Mathys",
-    surname: "",
-    role: "Spécialiste VAE · Certifié BOSCH",
-    description:
-      "Il diagnostique les problèmes d'assistance électrique là où d'autres ateliers abandonnent.",
-    accent: "Si votre VAE a un souci, il trouvera d'où ça vient.",
-  },
-  {
-    name: "Christophe",
-    surname: "",
-    role: "Réparations",
-    description:
-      "Les câbles tendus, les freins mordants, la transmission qui ne grince plus.",
-    accent: "Un travail soigné, sans raccourcis.",
-  },
-];
+import { team, type TeamMember } from "@/lib/data/team";
 
 function TeamCard({
   member,
@@ -45,7 +11,7 @@ function TeamCard({
   className,
   style,
 }: {
-  member: (typeof team)[number];
+  member: TeamMember;
   index: number;
   className?: string;
   style?: React.CSSProperties;
@@ -200,6 +166,82 @@ function MobileCardStack() {
   );
 }
 
+function DesktopTeamSpotlight() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  const selectMember = (i: number) => {
+    if (i === activeIndex) return;
+    setVisible(false);
+    setTimeout(() => { setActiveIndex(i); setVisible(true); }, 300);
+  };
+
+  const member = team[activeIndex];
+
+  return (
+    <div className="hidden md:flex reveal" style={{ gap: 0 }}>
+      {/* Left: featured card (65%) */}
+      <div
+        className="flex-[0_0_65%] bg-cream border border-anthracite/[0.06] rounded-sm p-12 relative overflow-hidden"
+        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}
+      >
+        <span className="absolute top-4 right-6 font-syne font-800 text-[8rem] leading-none text-anthracite/[0.025] select-none">
+          {member.name[0]}
+        </span>
+        <div className="relative">
+          <div className="w-20 h-20 rounded-full bg-anthracite/[0.06] border border-anthracite/[0.08] flex items-center justify-center mb-8">
+            <span className="font-syne font-800 text-2xl text-anthracite/20">
+              {member.name[0]}{member.surname ? member.surname[0] : ""}
+            </span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <h3 className="font-syne font-800 text-2xl text-anthracite">
+              {member.name}
+              {member.surname && (
+                <span className="font-400 text-anthracite/40 ml-2">{member.surname}</span>
+              )}
+            </h3>
+          </div>
+          <p className="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-terracotta mb-5">
+            {member.role}
+          </p>
+          <p className="text-anthracite/45 text-[1rem] leading-relaxed mb-3">
+            {member.description}
+          </p>
+          <p className="text-anthracite/70 text-[1rem] leading-relaxed font-medium italic">
+            {member.accent}
+          </p>
+        </div>
+      </div>
+
+      {/* Right: numbered list (35%) */}
+      <div className="flex-[0_0_35%] border border-anthracite/[0.06] border-l-0 rounded-sm rounded-l-none flex flex-col justify-center px-10">
+        {team.map((m, i) => {
+          const isActive = i === activeIndex;
+          return (
+            <button
+              key={i}
+              onClick={() => selectMember(i)}
+              className={`flex items-center gap-4 py-5 text-left transition-all duration-300 border-l-2 pl-5 ${
+                isActive
+                  ? "border-terracotta"
+                  : "border-transparent opacity-30 hover:opacity-60"
+              }`}
+            >
+              <span className={`font-syne font-800 text-sm ${isActive ? "text-terracotta" : "text-anthracite"}`}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="font-syne font-700 text-lg text-anthracite">
+                {m.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function Team() {
   const ref = useReveal(0.08);
 
@@ -219,17 +261,8 @@ export default function Team() {
         {/* Mobile: swipeable card stack */}
         <MobileCardStack />
 
-        {/* Desktop: grid */}
-        <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-5">
-          {team.map((member, i) => (
-            <TeamCard
-              key={i}
-              member={member}
-              index={i}
-              className={`reveal stagger-${i + 1}`}
-            />
-          ))}
-        </div>
+        {/* Desktop: spotlight layout */}
+        <DesktopTeamSpotlight />
       </div>
     </section>
   );

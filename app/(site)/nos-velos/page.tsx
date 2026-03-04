@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 import CtaBlock from "@/components/ui/CtaBlock";
-import { categories } from "@/lib/categories";
+import { categories } from "@/lib/data/categories";
 
 export const metadata: Metadata = {
   title: "Nos Vélos — Ville, Électrique, VTT | Colombes Cycles",
