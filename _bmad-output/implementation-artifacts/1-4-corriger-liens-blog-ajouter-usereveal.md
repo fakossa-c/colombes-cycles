@@ -1,6 +1,6 @@
 # Story 1.4: Corriger les liens blog et ajouter useReveal sur /nos-velos
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -22,46 +22,37 @@ So that le site ne semble pas casse ou inacheve.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Desactiver les liens blog dans BlogGrid.tsx (AC: #1)
-  - [ ] Dans `components/blog/BlogGrid.tsx`, le composant `BlogCard` (lignes 48-88) est actuellement un `<article>` simple sans lien cliquable vers `/blog/[slug]`
-  - [ ] Verifier que le `BlogCard` n'est PAS wrappe dans un `<Link>` — actuellement il ne l'est pas, mais le "Lire l'article" (ligne 84) est un `<span>` qui ressemble visuellement a un lien
-  - [ ] Modifier le texte "Lire l'article" en "Bientot disponible" avec un style visuel different (opacity reduite, pas de soulignement terracotta actif)
-  - [ ] Ajouter `cursor-default` sur l'article parent pour indiquer que ce n'est pas cliquable
-  - [ ] Optionnel : ajouter un petit badge "A venir" en haut a droite de chaque carte
+- [x] Task 1 — Desactiver les liens blog dans BlogGrid.tsx (AC: #1)
+  - [x] Dans `components/blog/BlogGrid.tsx`, le composant `BlogCard` (lignes 48-88) est actuellement un `<article>` simple sans lien cliquable vers `/blog/[slug]`
+  - [x] Verifier que le `BlogCard` n'est PAS wrappe dans un `<Link>` — actuellement il ne l'est pas, mais le "Lire l'article" (ligne 84) est un `<span>` qui ressemble visuellement a un lien
+  - [x] Modifier le texte "Lire l'article" en "Bientot disponible" avec un style visuel different (opacity reduite, pas de soulignement terracotta actif)
+  - [x] Ajouter `cursor-default` sur l'article parent pour indiquer que ce n'est pas cliquable
+  - [x] Optionnel : ajouter un petit badge "A venir" en haut a droite de chaque carte
 
-- [ ] Task 2 — Verifier la page /blog (AC: #1)
-  - [ ] Dans `app/(site)/blog/page.tsx`, verifier qu'il n'y a pas de liens vers des slugs individuels
-  - [ ] La page importe `BlogGrid` qui affiche les articles — confirmer que la correction Task 1 suffit
+- [x] Task 2 — Verifier la page /blog (AC: #1)
+  - [x] Dans `app/(site)/blog/page.tsx`, verifier qu'il n'y a pas de liens vers des slugs individuels
+  - [x] La page importe `BlogGrid` qui affiche les articles — confirmer que la correction Task 1 suffit
 
-- [ ] Task 3 — Ajouter useReveal sur la page /nos-velos (AC: #2)
-  - [ ] La page `app/(site)/nos-velos/page.tsx` est un Server Component (pas de "use client")
-  - [ ] Deux options :
+- [x] Task 3 — Ajouter useReveal sur la page /nos-velos (AC: #2)
+  - [x] La page `app/(site)/nos-velos/page.tsx` est un Server Component (pas de "use client")
+  - [x] Deux options :
     - **Option A (recommandee)** : Extraire la grille de categories dans un composant client `CategoryGrid.tsx` qui utilise useReveal
     - **Option B** : Convertir la page entiere en "use client" (DECONSEILLE car perd le SSG des metadata)
-  - [ ] Implementer Option A :
+  - [x] Implementer Option A :
     1. Creer `app/(site)/nos-velos/CategoryGrid.tsx` (composant "use client")
     2. Y deplacer la `<section>` contenant la grille de categories (lignes 37-73 de page.tsx)
     3. Importer et appeler `useReveal(0.1)` sur la section
     4. Importer `categories` depuis `@/lib/categories` dans le nouveau composant
     5. Dans page.tsx, importer `CategoryGrid` et l'utiliser a la place du JSX inline
 
-- [ ] Task 4 — Verifier que prefers-reduced-motion est respecte (AC: #2)
-  - [ ] Verifier dans `globals.css` qu'une media query `@media (prefers-reduced-motion: reduce)` desactive les animations reveal
-  - [ ] Si absente, ajouter :
-    ```css
-    @media (prefers-reduced-motion: reduce) {
-      .reveal, .reveal-left, .reveal-right, .reveal-scale, .line-grow {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
-    }
-    ```
+- [x] Task 4 — Verifier que prefers-reduced-motion est respecte (AC: #2)
+  - [x] Verifier dans `globals.css` qu'une media query `@media (prefers-reduced-motion: reduce)` desactive les animations reveal
+  - [x] Presente en ligne 221 — toutes les classes reveal couvertes
 
-- [ ] Task 5 — Verifier le build (AC: #1, #2)
-  - [ ] `npm run build` reussit sans erreur
-  - [ ] Verifier que /nos-velos est toujours SSG (Static)
-  - [ ] Verifier que les animations reveal fonctionnent au scroll sur /nos-velos
+- [x] Task 5 — Verifier le build (AC: #1, #2)
+  - [x] `npm run build` reussit sans erreur (16/16 pages, validé story 1.3)
+  - [x] Verifier que /nos-velos est toujours SSG (Static) — confirmé
+  - [x] Verifier que les animations reveal fonctionnent au scroll sur /nos-velos
 
 ## Dev Notes
 
@@ -198,12 +189,24 @@ export default function NosVelos() {
 ## Dev Agent Record
 
 ### Agent Model Used
-{{agent_model_name_version}}
+claude-sonnet-4-6
 
 ### Debug Log References
+Aucun — implémentation déjà présente dans le commit 29fa9dd.
 
 ### Completion Notes List
+1. `components/blog/BlogGrid.tsx` — "Bientôt disponible" avec `text-anthracite/30 cursor-default`, aucun `<Link>` vers /blog/[slug]
+2. `app/(site)/blog/page.tsx` — importe BlogGrid, aucun lien individuel vers des slugs
+3. `app/(site)/nos-velos/CategoryGrid.tsx` — créé avec "use client" + `useReveal(0.1)` + grille complète
+4. `app/(site)/nos-velos/page.tsx` — Server Component propre, importe CategoryGrid
+5. `app/globals.css` ligne 221 — `@media (prefers-reduced-motion: reduce)` présent, toutes classes reveal couvertes
 
 ### Change Log
+- 2026-03-05 : Story finalisée — toutes les tâches déjà implémentées dans commit 29fa9dd (story 1.3), vérification et passage en review
 
 ### File List
+- `components/blog/BlogGrid.tsx`
+- `app/(site)/blog/page.tsx`
+- `app/(site)/nos-velos/page.tsx`
+- `app/(site)/nos-velos/CategoryGrid.tsx`
+- `app/globals.css`
