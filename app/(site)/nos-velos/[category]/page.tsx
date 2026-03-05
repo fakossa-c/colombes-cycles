@@ -96,7 +96,7 @@ export default async function CategoryPage({ params }: Props) {
               {products.map((product, index) => (
                 <div
                   key={index}
-                  className="reveal stagger-${index + 1} group rounded-sm overflow-hidden"
+                  className={`reveal stagger-${index + 1} group rounded-sm overflow-hidden`}
                 >
                   <div className="aspect-[4/3] bg-anthracite/[0.05] flex items-center justify-center">
                     <svg

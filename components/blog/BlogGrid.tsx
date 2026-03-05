@@ -39,8 +39,8 @@ function BlogCard({ article, index }: { article: BlogArticle; index: number }) {
       </p>
 
       {/* Link */}
-      <span className="mt-4 inline-block text-[0.8rem] font-semibold tracking-wide text-terracotta underline underline-offset-4 decoration-2 decoration-terracotta/30 transition-colors duration-300 group-hover:decoration-terracotta">
-        Lire l&apos;article
+      <span className="mt-4 inline-block text-[0.8rem] font-medium tracking-wide text-anthracite/30 cursor-default">
+        Bientôt disponible
       </span>
     </article>
   );

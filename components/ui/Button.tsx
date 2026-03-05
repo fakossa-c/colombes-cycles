@@ -14,7 +14,7 @@ export default function Button({
   className = "",
 }: ButtonProps) {
   const base =
-    "relative inline-flex items-center justify-center gap-2 px-7 py-4 text-[0.8rem] font-semibold tracking-[0.15em] uppercase rounded-full transition-all duration-500 text-center magnetic-btn";
+    "group relative inline-flex items-center justify-center gap-2 px-7 py-4 text-[0.8rem] font-semibold tracking-[0.15em] uppercase rounded-full transition-all duration-500 text-center magnetic-btn";
 
   const variants = {
     primary:

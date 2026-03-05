@@ -1,7 +1,7 @@
 import Topbar from "@/components/layout/Topbar";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import ScrollProgress from "@/components/ui/BikeWheel";
+import BikeWheel from "@/components/ui/BikeWheel";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
@@ -12,9 +12,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     description:
       "Magasin de vélos à Colombes (92700). Vente de vélos ville, électrique, VTT, enfants. Réparation toutes marques. Certifié BOSCH eBike.",
     url: "https://www.colombes-cycles.fr",
-    telephone: "0142426602",
+    telephone: "+33142426602",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "45 avenue Henri Barbusse",
       addressLocality: "Colombes",
       postalCode: "92700",
       addressRegion: "Hauts-de-Seine",
@@ -30,10 +31,15 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     ],
     priceRange: "€€",
     founder: { "@type": "Person", name: "David Thibault" },
+    logo: {
+      "@type": "ImageObject",
+      url: "https://www.colombes-cycles.fr/images/logo.png",
+    },
+    image: "https://www.colombes-cycles.fr/images/og-colombes-cycles.jpg",
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.8",
-      reviewCount: "271",
+      reviewCount: 271,
       bestRating: "5",
       worstRating: "1",
     },
@@ -63,7 +69,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ScrollProgress />
+      <BikeWheel />
       <Topbar />
       <Navbar />
       <main>{children}</main>

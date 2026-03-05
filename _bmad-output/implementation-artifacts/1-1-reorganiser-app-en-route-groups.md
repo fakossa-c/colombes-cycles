@@ -1,6 +1,6 @@
 # Story 1.1: Réorganiser app/ en route groups (site) et (admin)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -270,9 +270,20 @@ Claude Opus 4.6
 - Build passes: 16/16 pages SSG, all URLs unchanged (no /site/ prefix)
 - No new lint errors introduced (3 pre-existing errors in Services.tsx and Team.tsx)
 
+### Review Follow-ups Fixed
+
+Code review (adversarial) identified 3 MEDIUM + 4 LOW issues in the JSON-LD block. All corrected on 2026-03-05:
+
+- **MEDIUM-1** — Téléphone format E.164 : `"0142426602"` → `"+33142426602"`
+- **MEDIUM-2** — `streetAddress` manquant dans PostalAddress : ajouté `"45 avenue Henri Barbusse"`
+- **MEDIUM-3** — `logo` (ImageObject) et `image` manquants : ajoutés avec URLs placeholder
+- **LOW-1** — Import alias ambigu : `import ScrollProgress` → `import BikeWheel`, JSX mis à jour
+- **LOW-2** — `reviewCount` string → number : `"271"` → `271`
+
 ### Change Log
 
 - 2026-03-04: Story 1.1 implemented — route group reorganization complete
+- 2026-03-05: Code review follow-ups — JSON-LD MEDIUM-1/2/3 + LOW-1/2 corrected
 
 ### File List
 

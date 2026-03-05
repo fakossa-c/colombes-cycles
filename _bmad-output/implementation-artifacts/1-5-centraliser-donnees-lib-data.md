@@ -1,6 +1,6 @@
 # Story 1.5: Centraliser les donnees dans lib/data/
 
-Status: review
+Status: done
 
 ## Story
 
@@ -281,7 +281,9 @@ claude-sonnet-4-6
 
 Aucun blocage. Implémentation directe conforme aux Dev Notes.
 
-Note : `labels` dans ServicesGrid.tsx renommé `serviceLabels` dans lib/data/services.ts pour éviter la collision avec le nom générique `labels`. ServicesGrid.tsx re-exporte `ServiceKey` via `export type { ServiceKey }` pour rétrocompatibilité avec BikeInteractiveSvg.tsx.
+Note : `labels` dans ServicesGrid.tsx renommé `serviceLabels` dans lib/data/services.ts pour éviter la collision avec le nom générique `labels`. BikeInteractiveSvg.tsx importe désormais `ServiceKey` directement depuis `@/lib/data/services` (pas de re-export intermédiaire depuis ServicesGrid.tsx).
+
+Note commit : les stories 1.5 et 1.6 ont été committées ensemble (`c0a655d`). Hero.tsx et les pages d'erreur (story 1.6) sont inclus dans ce commit mais ne font pas partie du périmètre de la story 1.5.
 
 ### Completion Notes List
 
@@ -319,6 +321,7 @@ Note : `labels` dans ServicesGrid.tsx renommé `serviceLabels` dans lib/data/ser
 - `app/(site)/nos-velos/[category]/page.tsx` (MODIFIÉ)
 - `components/home/Team.tsx` (MODIFIÉ)
 - `components/home/Reviews.tsx` (MODIFIÉ)
+- `app/(site)/reparations/BikeInteractiveSvg.tsx` (MODIFIÉ — import ServiceKey depuis lib/data/services)
 - `app/(site)/reparations/ServicesGrid.tsx` (MODIFIÉ)
 - `app/(site)/reparations/page.tsx` (MODIFIÉ)
 - `app/(site)/a-propos/page.tsx` (MODIFIÉ)
