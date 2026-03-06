@@ -130,8 +130,8 @@ export default function ServicesGrid() {
 
         <div className="reveal flex flex-col lg:flex-row items-stretch gap-8 lg:gap-15">
           {/* ═══ BIKE SIDE ═══ */}
-          <div className="flex-1 flex items-center justify-center min-w-0 max-w-[500px] lg:max-w-none mx-auto lg:mx-0">
-            <div className="relative w-full max-w-[620px]">
+          <div className="flex-1 flex items-center justify-center min-w-0 mx-auto lg:mx-0">
+            <div className="relative w-full max-w-[780px]">
 
               <BikeInteractiveSvg active={active} onSelect={onBikeSelect} />
 

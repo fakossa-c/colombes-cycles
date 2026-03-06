@@ -119,14 +119,14 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       {/* ── Révision = the frame (bottom layer) ── */}
       <Hotspot service="revision" active={active} onSelect={onSelect}>
         {/* Hit areas (invisible thick strokes) */}
-        <line x1="235" y1="140" x2="415" y2="140" stroke="transparent" strokeWidth="20" className="fill-transparent pointer-events-auto" />
-        <line x1="248" y1="148" x2="152" y2="248" stroke="transparent" strokeWidth="20" className="fill-transparent pointer-events-auto" />
-        <line x1="235" y1="140" x2="200" y2="252" stroke="transparent" strokeWidth="20" className="fill-transparent pointer-events-auto" />
-        <line x1="200" y1="252" x2="148" y2="258" stroke="transparent" strokeWidth="18" className="fill-transparent pointer-events-auto" />
-        <line x1="235" y1="140" x2="148" y2="258" stroke="transparent" strokeWidth="18" className="fill-transparent pointer-events-auto" />
-        <line x1="415" y1="140" x2="452" y2="258" stroke="transparent" strokeWidth="20" className="fill-transparent pointer-events-auto" />
-        <ellipse cx="235" cy="107" rx="28" ry="14" className="fill-transparent pointer-events-auto" />
-        <path d="M 395 100 Q 418 88 445 100 L 445 118 L 395 118 Z" className="fill-transparent pointer-events-auto" />
+        <line x1="235" y1="140" x2="415" y2="140" stroke="transparent" strokeWidth="32" className="fill-transparent pointer-events-auto" />
+        <line x1="248" y1="148" x2="152" y2="248" stroke="transparent" strokeWidth="32" className="fill-transparent pointer-events-auto" />
+        <line x1="235" y1="140" x2="200" y2="252" stroke="transparent" strokeWidth="32" className="fill-transparent pointer-events-auto" />
+        <line x1="200" y1="252" x2="148" y2="258" stroke="transparent" strokeWidth="28" className="fill-transparent pointer-events-auto" />
+        <line x1="235" y1="140" x2="148" y2="258" stroke="transparent" strokeWidth="28" className="fill-transparent pointer-events-auto" />
+        <line x1="415" y1="140" x2="452" y2="258" stroke="transparent" strokeWidth="32" className="fill-transparent pointer-events-auto" />
+        <ellipse cx="235" cy="107" rx="38" ry="22" className="fill-transparent pointer-events-auto" />
+        <path d="M 385 92 Q 418 80 455 92 L 455 126 L 385 126 Z" className="fill-transparent pointer-events-auto" />
 
         {/* Visible frame tubes */}
         <line className="part-line" x1="235" y1="140" x2="415" y2="140" stroke="#1C1C1E" strokeWidth="3" opacity="0.25" />
@@ -147,8 +147,8 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       <Hotspot service="roues" active={active} onSelect={onSelect}>
         <circle className="zone-fill" cx="148" cy="258" r="72" />
         <circle className="zone-fill" cx="452" cy="258" r="72" />
-        <circle cx="148" cy="258" r="76" className="fill-transparent pointer-events-auto" />
-        <circle cx="452" cy="258" r="76" className="fill-transparent pointer-events-auto" />
+        <circle cx="148" cy="258" r="82" className="fill-transparent pointer-events-auto" />
+        <circle cx="452" cy="258" r="82" className="fill-transparent pointer-events-auto" />
         <circle className="part-line" cx="148" cy="258" r="72" stroke="#1C1C1E" strokeWidth="2" fill="none" opacity="0.55" />
         <circle className="part-line" cx="452" cy="258" r="72" stroke="#1C1C1E" strokeWidth="2" fill="none" opacity="0.55" />
         <Marker cx={148} cy={186} delay={0.2} />
@@ -159,8 +159,8 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       <Hotspot service="freinage" active={active} onSelect={onSelect}>
         <rect className="zone-fill" x="430" y="170" width="46" height="34" rx="8" />
         <rect className="zone-fill" x="124" y="170" width="46" height="34" rx="8" />
-        <rect x="426" y="165" width="54" height="44" rx="10" className="fill-transparent pointer-events-auto" />
-        <rect x="120" y="165" width="54" height="44" rx="10" className="fill-transparent pointer-events-auto" />
+        <rect x="418" y="158" width="70" height="58" rx="12" className="fill-transparent pointer-events-auto" />
+        <rect x="112" y="158" width="70" height="58" rx="12" className="fill-transparent pointer-events-auto" />
         <rect className="part-line" x="439" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" strokeWidth="1.8" fill="none" opacity="0.65" />
         <rect className="part-line" x="459" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" strokeWidth="1.8" fill="none" opacity="0.65" />
         <rect className="part-line" x="133" y="178" width="7" height="18" rx="2" stroke="#1C1C1E" strokeWidth="1.8" fill="none" opacity="0.65" />
@@ -173,7 +173,7 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       {/* ── Transmission ── */}
       <Hotspot service="transmission" active={active} onSelect={onSelect}>
         <ellipse className="zone-fill" cx="186" cy="260" rx="52" ry="38" />
-        <ellipse cx="186" cy="260" rx="56" ry="42" className="fill-transparent pointer-events-auto" />
+        <ellipse cx="186" cy="260" rx="68" ry="52" className="fill-transparent pointer-events-auto" />
         <circle className="part-line" cx="200" cy="255" r="24" stroke="#1C1C1E" strokeWidth="2" fill="none" opacity="0.55" />
         <circle className="part-line" cx="200" cy="255" r="17" stroke="#1C1C1E" strokeWidth="1" fill="none" opacity="0.3" />
         <circle className="part-line" cx="148" cy="258" r="14" stroke="#1C1C1E" strokeWidth="1.5" fill="none" opacity="0.45" />
@@ -188,7 +188,7 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       {/* ── Électrique ── */}
       <Hotspot service="electrique" active={active} onSelect={onSelect}>
         <rect className="zone-fill" x="170" y="148" width="68" height="28" rx="6" transform="rotate(-40, 204, 162)" />
-        <rect x="165" y="142" width="78" height="40" rx="8" transform="rotate(-40, 204, 162)" className="fill-transparent pointer-events-auto" />
+        <rect x="158" y="134" width="92" height="56" rx="10" transform="rotate(-40, 204, 162)" className="fill-transparent pointer-events-auto" />
         <rect className="part-line" x="178" y="155" width="52" height="16" rx="4" stroke="#1C1C1E" strokeWidth="1.8" fill="rgba(196,98,45,0.05)" opacity="0.7" transform="rotate(-40, 204, 163)" />
         <path className="part-line" d="M 196 170 L 202 160 L 198 165 L 205 155" stroke="#C4622D" strokeWidth="1.5" fill="none" opacity="0.55" />
         <Marker cx={186} cy={150} delay={2} />
@@ -197,7 +197,7 @@ export default function BikeInteractiveSvg({ active, onSelect }: Props) {
       {/* ── Urgences ── */}
       <Hotspot service="urgences" active={active} onSelect={onSelect}>
         <circle className="zone-fill" cx="545" cy="70" r="26" />
-        <circle cx="545" cy="70" r="30" className="fill-transparent pointer-events-auto" />
+        <circle cx="545" cy="70" r="38" className="fill-transparent pointer-events-auto" />
         <circle className="part-line" cx="545" cy="70" r="22" stroke="#1C1C1E" strokeWidth="1.2" fill="#FAFAF7" opacity="0.9" />
         <text x="545" y="67" textAnchor="middle" fontFamily="Syne, sans-serif" fontSize="11" fontWeight="700" fill="#1C1C1E" opacity="0.6" className="pointer-events-none">SOS</text>
         <text x="545" y="82" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="7" fill="#1C1C1E" opacity="0.35" className="pointer-events-none">urgences</text>
