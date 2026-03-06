@@ -6,11 +6,11 @@ import CtaBlock from "@/components/ui/CtaBlock";
 import { categories, getCategoryBySlug } from "@/lib/data/categories";
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  "velos-de-ville":    "https://images.unsplash.com/photo-bYGTxSn06C0?w=600&q=80&fit=crop",
-  "velos-electriques": "https://images.unsplash.com/photo-HgMNER_JMts?w=600&q=80&fit=crop",
-  "vtt":               "https://images.unsplash.com/photo-9qsK2QHidmg?w=600&q=80&fit=crop",
-  "velos-enfants":     "https://images.unsplash.com/photo-5fmXq6nyr9k?w=600&q=80&fit=crop",
-  "accessoires":       "https://images.unsplash.com/photo-0YDTJK9BJzQ?w=600&q=80&fit=crop",
+  "velos-de-ville":    "https://images.unsplash.com/photo-1602517232715-c4a366f0ce1b?w=600&q=80&fit=crop&auto=format",
+  "velos-electriques": "https://images.unsplash.com/photo-1620802051782-725fa33db067?w=600&q=80&fit=crop&auto=format",
+  "vtt":               "https://images.unsplash.com/photo-1606087492572-424ebe0f2f61?w=600&q=80&fit=crop&auto=format",
+  "velos-enfants":     "https://images.unsplash.com/photo-1595182747080-3b43712dd27d?w=600&q=80&fit=crop&auto=format",
+  "accessoires":       "https://images.unsplash.com/photo-1596731530340-64945278d9f6?w=600&q=80&fit=crop&auto=format",
 };
 
 type Props = {

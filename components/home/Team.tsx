@@ -195,8 +195,12 @@ function DesktopTeamSpotlight() {
     >
       {/* Left: featured card (65%) */}
       <div
-        className="flex-[0_0_65%] bg-cream border border-anthracite/[0.06] rounded-sm p-12 relative overflow-hidden"
-        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}
+        className="flex-[0_0_65%] bg-cream border border-anthracite/[0.06] rounded-sm p-12 relative overflow-hidden min-h-[380px]"
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(10px)",
+          transition: "opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1)",
+        }}
       >
         <span className="absolute top-4 right-6 font-syne font-800 text-[8rem] leading-none text-anthracite/[0.025] select-none">
           {member.name[0]}

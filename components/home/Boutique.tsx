@@ -38,7 +38,7 @@ export default function Boutique() {
             {/* Main large image — Atelier */}
             <div className="col-span-7 row-span-4 rounded-sm relative overflow-hidden group">
               <Image
-                src="https://images.unsplash.com/photo-_x1bEIi99GI?w=800&q=80&fit=crop"
+                src="https://images.unsplash.com/photo-1675798227643-da319f8ee8f7?w=800&q=80&fit=crop&auto=format"
                 alt="Technicien réparant un vélo à l'atelier Colombes Cycles"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -50,7 +50,7 @@ export default function Boutique() {
             {/* Top right — Boutique */}
             <div className="col-span-5 row-span-3 rounded-sm relative overflow-hidden group">
               <Image
-                src="https://images.unsplash.com/photo-_Oh8YcgTjxU?w=600&q=80&fit=crop"
+                src="https://images.unsplash.com/photo-1605271864611-58dd08d10547?w=600&q=80&fit=crop&auto=format"
                 alt="Client choisissant un vélo dans le magasin Colombes Cycles"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -61,7 +61,7 @@ export default function Boutique() {
             {/* Bottom left — Vue intérieure */}
             <div className="col-span-5 row-span-2 rounded-sm relative overflow-hidden group">
               <Image
-                src="https://images.unsplash.com/photo-OXXsAafHDeo?w=600&q=80&fit=crop"
+                src="https://images.unsplash.com/photo-1601067095185-b8b73ad7db10?w=600&q=80&fit=crop&auto=format"
                 alt="Vue intérieure de la boutique"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -72,7 +72,7 @@ export default function Boutique() {
             {/* Bottom right — Vélos en rayon */}
             <div className="col-span-7 row-span-3 rounded-sm relative overflow-hidden group">
               <Image
-                src="https://images.unsplash.com/photo-6pRIXT8EcSI?w=800&q=80&fit=crop"
+                src="https://images.unsplash.com/photo-1521078803125-7efd09b65b8f?w=800&q=80&fit=crop&auto=format"
                 alt="Vélos exposés en boutique"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
