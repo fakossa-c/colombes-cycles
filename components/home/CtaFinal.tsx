@@ -27,7 +27,7 @@ export default function CtaFinal() {
         </div>
 
         <div className="reveal stagger-2 mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button href="/contact">Prendre rendez-vous</Button>
+          <Button href="/contact">Contactez-nous</Button>
           <Button href={`tel:${siteConfig.phoneTel}`} variant="outline">
             {siteConfig.phone}
           </Button>

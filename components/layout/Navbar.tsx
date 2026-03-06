@@ -89,12 +89,14 @@ export default function Navbar() {
               </Link>
             )
           )}
-          <Link
-            href="/contact"
-            className="bg-anthracite text-cream px-5 py-2.5 text-[0.7rem] font-semibold tracking-[0.15em] uppercase rounded-full hover:bg-terracotta transition-colors duration-300"
+          <a
+            href="https://www.velodeville.fr/configurateur/?h_ident=10144"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-anthracite text-cream px-5 py-2.5 text-[0.7rem] font-semibold tracking-[0.15em] uppercase rounded-full hover:bg-terracotta transition-colors duration-300 whitespace-nowrap"
           >
-            Prendre RDV
-          </Link>
+            Configurer votre vélo
+          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -139,13 +141,15 @@ export default function Navbar() {
               ))}
             </div>
           ))}
-          <Link
-            href="/contact"
+          <a
+            href="https://www.velodeville.fr/configurateur/?h_ident=10144"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
             className="block mt-6 bg-anthracite text-cream px-5 py-3.5 text-[0.7rem] font-semibold tracking-[0.15em] uppercase rounded-full text-center hover:bg-terracotta transition-colors"
           >
-            Prendre RDV
-          </Link>
+            Configurer votre vélo
+          </a>
         </div>
       </div>
     </nav>

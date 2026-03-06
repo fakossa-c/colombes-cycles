@@ -139,7 +139,7 @@ export default function ReparationsPage() {
       <CtaBlock
         title="Votre vélo mérite d'être regardé par quelqu'un qui s'y connaît vraiment."
         subtitle="Prenez rendez-vous à l'atelier. On regarde, on diagnostique, on vous dit ce qu'il en est."
-        ctaText="Prendre rendez-vous"
+        ctaText="Contactez-nous"
         ctaHref="/contact"
       />
     </>

@@ -35,22 +35,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const placeholderProducts: Record<string, { name: string; price: string }[]> = {
+const ORBEA_CDN = "https://www.orbea.com/img/products/product/over/list";
+
+const placeholderProducts: Record<string, { name: string; price: string; image?: string }[]> = {
   "velos-de-ville": [
-    { name: "Orbea Vibe Urban", price: "899 €" },
+    { name: "Orbea Vibe Urban", price: "899 €", image: `${ORBEA_CDN}/T366TTCC-W7-SIDE-KEMEN_TOUR_20_over.jpg` },
     { name: "Peugeot LC01 City", price: "649 €" },
     { name: "Velodeville L200", price: "749 €" },
     { name: "Gitane City Link", price: "549 €" },
   ],
   "velos-electriques": [
-    { name: "Orbea Optima E40", price: "2 899 €" },
+    { name: "Orbea Optima E40", price: "2 899 €", image: `${ORBEA_CDN}/U378TTCC-WD-SIDE-CARPE_25_over.jpg` },
     { name: "Peugeot eLC01 BOSCH", price: "2 499 €" },
-    { name: "Orbea Vibe Mid BOSCH", price: "3 199 €" },
+    { name: "Orbea Vibe Mid BOSCH", price: "3 199 €", image: `${ORBEA_CDN}/R307TTCC-W1-SIDE-VIBE_MID_H10_over.jpg` },
   ],
   vtt: [
-    { name: "Orbea MX 30", price: "799 €" },
+    { name: "Orbea MX 30", price: "799 €", image: `${ORBEA_CDN}/T210TTCC-M2-SIDE-ALMA_H30_over.jpg` },
     { name: "Peugeot M02 Trail", price: "1 099 €" },
-    { name: "Orbea Laufey H30", price: "1 299 €" },
+    { name: "Orbea Laufey H30", price: "1 299 €", image: `${ORBEA_CDN}/T233TTCC-PG-SIDE-LAUFEY_H30_over.jpg` },
   ],
   "velos-enfants": [
     { name: "Peugeot J16 (16 pouces)", price: "249 €" },
@@ -71,7 +73,7 @@ export default async function CategoryPage({ params }: Props) {
   if (!cat) notFound();
 
   const products = placeholderProducts[cat.slug] || [];
-  const categoryImage = CATEGORY_IMAGES[cat.slug];
+  const categoryFallbackImage = CATEGORY_IMAGES[cat.slug];
 
   return (
     <>
@@ -109,10 +111,10 @@ export default async function CategoryPage({ params }: Props) {
                   className={`reveal stagger-${index + 1} group rounded-sm overflow-hidden`}
                 >
                   <div className="aspect-[4/3] relative overflow-hidden bg-anthracite/[0.05]">
-                    {categoryImage && (
+                    {(product.image || categoryFallbackImage) && (
                       <Image
-                        src={categoryImage}
-                        alt={cat.title}
+                        src={product.image ?? categoryFallbackImage!}
+                        alt={product.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -175,7 +177,7 @@ export default async function CategoryPage({ params }: Props) {
       <CtaBlock
         title="Vous ne savez pas encore par où commencer ?"
         subtitle="Passez en boutique, on regarde ensemble."
-        ctaText="Prendre rendez-vous en boutique"
+        ctaText="Contactez-nous"
         ctaHref="/contact"
       />
     </>
