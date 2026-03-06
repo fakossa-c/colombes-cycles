@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import PageHero from "@/components/ui/PageHero";
 import CtaBlock from "@/components/ui/CtaBlock";
 import { categories, getCategoryBySlug } from "@/lib/data/categories";
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  "velos-de-ville":    "https://images.unsplash.com/photo-bYGTxSn06C0?w=600&q=80&fit=crop",
+  "velos-electriques": "https://images.unsplash.com/photo-HgMNER_JMts?w=600&q=80&fit=crop",
+  "vtt":               "https://images.unsplash.com/photo-9qsK2QHidmg?w=600&q=80&fit=crop",
+  "velos-enfants":     "https://images.unsplash.com/photo-5fmXq6nyr9k?w=600&q=80&fit=crop",
+  "accessoires":       "https://images.unsplash.com/photo-0YDTJK9BJzQ?w=600&q=80&fit=crop",
+};
 
 type Props = {
   params: Promise<{ category: string }>;
@@ -62,6 +71,7 @@ export default async function CategoryPage({ params }: Props) {
   if (!cat) notFound();
 
   const products = placeholderProducts[cat.slug] || [];
+  const categoryImage = CATEGORY_IMAGES[cat.slug];
 
   return (
     <>
@@ -98,20 +108,16 @@ export default async function CategoryPage({ params }: Props) {
                   key={index}
                   className={`reveal stagger-${index + 1} group rounded-sm overflow-hidden`}
                 >
-                  <div className="aspect-[4/3] bg-anthracite/[0.05] flex items-center justify-center">
-                    <svg
-                      className="w-10 h-10 text-anthracite/15"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
+                  <div className="aspect-[4/3] relative overflow-hidden bg-anthracite/[0.05]">
+                    {categoryImage && (
+                      <Image
+                        src={categoryImage}
+                        alt={cat.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
-                    </svg>
+                    )}
                   </div>
                   <div className="p-5">
                     <h3 className="font-syne font-600 text-sm text-anthracite">

@@ -4,6 +4,7 @@ export type BlogArticle = {
   excerpt: string;
   date: string;
   dateISO: string;
+  image: string;
 };
 
 export const articles: BlogArticle[] = [
@@ -14,6 +15,7 @@ export const articles: BlogArticle[] = [
       "Ville, cargo, VTT électrique : comment choisir le bon VAE pour vos trajets en Île-de-France. On vous aide à y voir clair.",
     date: "15 mars 2026",
     dateISO: "2026-03-15",
+    image: "https://images.unsplash.com/photo-HgMNER_JMts?w=800&q=80&fit=crop",
   },
   {
     slug: "entretien-velo-colombes",
@@ -22,6 +24,7 @@ export const articles: BlogArticle[] = [
       "Quelques gestes réguliers suffisent à prolonger la vie de votre vélo. Voici ceux que notre atelier recommande.",
     date: "10 mars 2026",
     dateISO: "2026-03-10",
+    image: "https://images.unsplash.com/photo-_x1bEIi99GI?w=800&q=80&fit=crop",
   },
   {
     slug: "pistes-cyclables-colombes-hauts-de-seine",
@@ -30,6 +33,7 @@ export const articles: BlogArticle[] = [
       "De Colombes à Bois-Colombes, Asnières ou La Défense : les meilleurs trajets à vélo testés par l'équipe.",
     date: "5 mars 2026",
     dateISO: "2026-03-05",
+    image: "https://images.unsplash.com/photo-bYGTxSn06C0?w=800&q=80&fit=crop",
   },
   {
     slug: "revision-velo-professionnel",
@@ -38,5 +42,6 @@ export const articles: BlogArticle[] = [
       "Les signes qui montrent qu'il est temps de passer à l'atelier. Et ce que change une vraie révision.",
     date: "1 mars 2026",
     dateISO: "2026-03-01",
+    image: "https://images.unsplash.com/photo-GNSIOmiBFaY?w=800&q=80&fit=crop",
   },
 ];

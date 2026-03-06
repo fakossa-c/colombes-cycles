@@ -1,26 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import { useReveal } from "@/components/ui/useReveal";
 import { articles, type BlogArticle } from "@/lib/data/blog-posts";
 
 function BlogCard({ article, index }: { article: BlogArticle; index: number }) {
   return (
     <article className={`reveal stagger-${index + 1} group`}>
-      {/* Image placeholder */}
-      <div className="aspect-[16/9] rounded-sm bg-anthracite/[0.05] flex items-center justify-center mb-5 overflow-hidden">
-        <svg
-          className="h-10 w-10 text-anthracite/15 transition-transform duration-500 group-hover:scale-110"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5"
-          />
-        </svg>
+      <div className="aspect-[16/9] rounded-sm mb-5 overflow-hidden relative">
+        <Image
+          src={article.image}
+          alt={article.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
       </div>
 
       {/* Date */}
