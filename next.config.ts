@@ -2,6 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async redirects() {
+    return [
+      // Redirections 301 WordPress → Next.js (FR33)
+      { source: "/accueil", destination: "/", permanent: true },
+      { source: "/nos-velos-2", destination: "/nos-velos", permanent: true },
+      { source: "/atelier", destination: "/reparations", permanent: true },
+      { source: "/a-propos-2", destination: "/a-propos", permanent: true },
+      { source: "/contact-2", destination: "/contact", permanent: true },
+      // Alias courants WordPress
+      { source: "/home", destination: "/", permanent: true },
+      { source: "/velos", destination: "/nos-velos", permanent: true },
+      { source: "/reparation", destination: "/reparations", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

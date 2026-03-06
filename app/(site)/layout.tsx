@@ -2,24 +2,30 @@ import Topbar from "@/components/layout/Topbar";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BikeWheel from "@/components/ui/BikeWheel";
+import { siteConfig } from "@/lib/data/site-config";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "BikeStore"],
-    "@id": "https://www.colombes-cycles.fr/#business",
-    name: "Colombes Cycles",
+    "@id": `${siteConfig.url}/#business`,
+    name: siteConfig.name,
     description:
       "Magasin de vélos à Colombes (92700). Vente de vélos ville, électrique, VTT, enfants. Réparation toutes marques. Certifié BOSCH eBike.",
-    url: "https://www.colombes-cycles.fr",
-    telephone: "+33142426602",
+    url: siteConfig.url,
+    telephone: `+33${siteConfig.phoneTel.replace(/^0/, "")}`,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "45 avenue Henri Barbusse",
-      addressLocality: "Colombes",
-      postalCode: "92700",
+      streetAddress: siteConfig.address.street,
+      addressLocality: siteConfig.address.city,
+      postalCode: siteConfig.address.postalCode,
       addressRegion: "Hauts-de-Seine",
       addressCountry: "FR",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: siteConfig.geo.latitude,
+      longitude: siteConfig.geo.longitude,
     },
     openingHoursSpecification: [
       {
@@ -30,26 +36,20 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       },
     ],
     priceRange: "€€",
-    founder: { "@type": "Person", name: "David Thibault" },
+    founder: { "@type": "Person", name: siteConfig.owner },
     logo: {
       "@type": "ImageObject",
-      url: "https://www.colombes-cycles.fr/images/logo.png",
+      url: `${siteConfig.url}/images/logo.png`,
     },
-    image: "https://www.colombes-cycles.fr/images/og-colombes-cycles.jpg",
+    image: `${siteConfig.url}/images/og-colombes-cycles.jpg`,
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: "4.8",
-      reviewCount: 271,
+      ratingValue: String(siteConfig.google.rating),
+      reviewCount: siteConfig.google.reviewCount,
       bestRating: "5",
       worstRating: "1",
     },
-    brand: [
-      { "@type": "Brand", name: "Orbea" },
-      { "@type": "Brand", name: "Peugeot Cycles" },
-      { "@type": "Brand", name: "Gitane" },
-      { "@type": "Brand", name: "Velodeville" },
-      { "@type": "Brand", name: "BOSCH eBike Systems" },
-    ],
+    brand: siteConfig.brands.map((name) => ({ "@type": "Brand", name })),
     areaServed: [
       { "@type": "City", name: "Colombes" },
       { "@type": "City", name: "Bois-Colombes" },
