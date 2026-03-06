@@ -2,10 +2,13 @@
 
 import { useState, FormEvent } from "react";
 import { useReveal } from "@/components/ui/useReveal";
+import { sendContact } from "@/app/actions/sendContact";
 
 export default function ContactForm() {
   const ref = useReveal(0.15);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [form, setForm] = useState({
@@ -29,7 +32,7 @@ export default function ContactForm() {
     return errs;
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -37,7 +40,15 @@ export default function ContactForm() {
       return;
     }
     setErrors({});
-    setSubmitted(true);
+    setServerError("");
+    setSending(true);
+    const result = await sendContact(form);
+    setSending(false);
+    if (result.success) {
+      setSubmitted(true);
+    } else {
+      setServerError(result.error);
+    }
   }
 
   function handleChange(
@@ -172,13 +183,25 @@ export default function ContactForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="relative inline-flex items-center gap-2 rounded-full bg-terracotta px-7 py-4 text-[0.8rem] font-semibold uppercase tracking-[0.15em] text-white transition-all duration-500 hover:bg-terracotta-dark active:scale-[0.97]"
+          disabled={sending}
+          className="relative inline-flex items-center gap-2 rounded-full bg-terracotta px-7 py-4 text-[0.8rem] font-semibold uppercase tracking-[0.15em] text-white transition-all duration-500 hover:bg-terracotta-dark active:scale-[0.97] disabled:opacity-60 disabled:pointer-events-none"
         >
-          Envoyer
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-          </svg>
+          {sending ? "Envoi en cours…" : "Envoyer"}
+          {!sending && (
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+            </svg>
+          )}
         </button>
+
+        {serverError && (
+          <p className="text-[0.8rem] text-red-600">{serverError}</p>
+        )}
+
+        {/* Mention RGPD */}
+        <p className="text-[0.75rem] text-anthracite/40 leading-relaxed pt-2">
+          Les informations collectées (nom, email, message) sont utilisées uniquement pour répondre à votre demande. Elles ne sont ni vendues, ni transmises à des tiers. Conformément au RGPD, vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos données en nous contactant directement.
+        </p>
       </form>
     </section>
   );

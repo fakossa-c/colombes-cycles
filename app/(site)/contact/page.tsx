@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/PageHero";
+import ContactForm from "@/components/contact/ContactForm";
+import MapsEmbed from "./MapsEmbed";
 
 export const metadata: Metadata = {
   title: "Contact & Horaires — Colombes Cycles Colombes 92",
@@ -83,20 +85,17 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              {/* Google Maps */}
-              <div className="aspect-[4/3] rounded-sm overflow-hidden">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2621.0!2d2.2442!3d48.9234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e665c1e6d7e8a7%3A0x0!2s12+Avenue+Henri+Barbusse%2C+92700+Colombes!5e0!3m2!1sfr!2sfr!4v1700000000000"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Colombes Cycles — 12 Av. Henri Barbusse, 92700 Colombes"
-                />
-              </div>
+              {/* Google Maps — pointer-events géré dans MapsEmbed (anti-capture scroll) */}
+              <MapsEmbed />
             </div>
+          </div>
+
+          {/* Formulaire de contact */}
+          <div className="mt-20 max-w-2xl">
+            <h2 className="font-syne font-700 text-[1.4rem] text-anthracite mb-8">
+              Envoyez-nous un message.
+            </h2>
+            <ContactForm />
           </div>
         </div>
       </section>
