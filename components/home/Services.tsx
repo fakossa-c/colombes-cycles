@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
 import { useParallax } from "@/components/ui/useParallax";
@@ -17,6 +18,7 @@ const services = [
       </>
     ),
     label: "Vente",
+    href: "/nos-velos",
   },
   {
     num: "02",
@@ -30,6 +32,7 @@ const services = [
       </>
     ),
     label: "Réparation",
+    href: "/reparations",
   },
   {
     num: "03",
@@ -43,6 +46,7 @@ const services = [
       </>
     ),
     label: "Conseil",
+    href: "/contact",
   },
 ];
 
@@ -80,8 +84,9 @@ export default function Services() {
 
         <div className="space-y-16 md:space-y-0 md:grid md:grid-cols-3 md:gap-0">
           {services.map((service, i) => (
-            <div
+            <Link
               key={i}
+              href={service.href}
               className={`reveal stagger-${i + 1} group relative md:px-8 lg:px-12 ${
                 i < services.length - 1 ? "md:border-r md:border-anthracite/[0.06]" : ""
               }`}
@@ -98,7 +103,7 @@ export default function Services() {
               <p className="text-anthracite/50 leading-[1.8] text-[0.92rem]">
                 {service.text}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
