@@ -108,7 +108,7 @@ export default async function CategoryPage({ params }: Props) {
               {products.map((product, index) => (
                 <div
                   key={index}
-                  className={`reveal stagger-${index + 1} group rounded-sm overflow-hidden`}
+                  className="group rounded-sm overflow-hidden"
                 >
                   <div className="aspect-[4/3] relative overflow-hidden bg-anthracite/[0.05]">
                     {(product.image || categoryFallbackImage) && (
