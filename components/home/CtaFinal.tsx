@@ -2,6 +2,7 @@
 
 import Button from "@/components/ui/Button";
 import { useReveal } from "@/components/ui/useReveal";
+import { siteConfig } from "@/lib/data/site-config";
 
 export default function CtaFinal() {
   const ref = useReveal(0.2);
@@ -27,8 +28,8 @@ export default function CtaFinal() {
 
         <div className="reveal stagger-2 mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Button href="/contact">Prendre rendez-vous</Button>
-          <Button href="tel:0142426602" variant="outline">
-            01 42 42 66 02
+          <Button href={`tel:${siteConfig.phoneTel}`} variant="outline">
+            {siteConfig.phone}
           </Button>
         </div>
       </div>
