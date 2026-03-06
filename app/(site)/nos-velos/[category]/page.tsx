@@ -143,6 +143,26 @@ export default async function CategoryPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          {cat.velodevilleConfigUrl && (
+            <div className="mt-16 bg-anthracite/[0.03] border border-anthracite/[0.08] rounded-sm p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <p className="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-terracotta mb-1">Velodeville</p>
+                <h3 className="font-syne font-700 text-xl text-anthracite">Configurez votre vélo en ligne</h3>
+                <p className="mt-2 text-anthracite/50 text-sm">
+                  Choisissez votre coloris et vos options directement sur le site Velodeville — revendeur officiel Colombes Cycles.
+                </p>
+              </div>
+              <a
+                href={cat.velodevilleConfigUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 bg-anthracite text-cream px-6 py-3 text-[0.75rem] font-semibold tracking-[0.15em] uppercase rounded-full hover:bg-terracotta transition-colors duration-300 whitespace-nowrap"
+              >
+                Configurer →
+              </a>
+            </div>
+          )}
         </div>
       </section>
 

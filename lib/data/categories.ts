@@ -8,6 +8,7 @@ export type Category = {
   angleConseil: string;
   breadcrumbLabel: string;
   brands: string[];
+  velodevilleConfigUrl?: string;
 };
 
 export const categories: Category[] = [
@@ -24,6 +25,7 @@ export const categories: Category[] = [
       "Vous cherchez un vélo pour aller au travail ou vous déplacer en ville ? Parlez-nous de votre trajet, de la distance, du terrain. On vous orientera vers le bon modèle — ni trop, ni pas assez.",
     breadcrumbLabel: "Vélos de ville",
     brands: ["Orbea", "Peugeot Cycles", "Gitane", "Velodeville"],
+    velodevilleConfigUrl: "https://www.velodeville.fr/configurateur/?h_ident=10144",
   },
   {
     slug: "velos-electriques",
