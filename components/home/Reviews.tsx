@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useReveal } from "@/components/ui/useReveal";
 import { reviews } from "@/lib/data/reviews";
+import { siteConfig } from "@/lib/data/site-config";
 
 function Stars() {
   return (
@@ -242,7 +243,7 @@ export default function Reviews() {
           {/* Big rating */}
           <div className="flex items-center gap-6">
             <span className="font-syne font-800 text-[5rem] md:text-[6rem] leading-none text-white">
-              4,8
+              {siteConfig.google.rating.toString().replace(".", ",")}
             </span>
             <div>
               <div className="flex gap-1 mb-2">
@@ -252,7 +253,7 @@ export default function Reviews() {
                   </svg>
                 ))}
               </div>
-              <p className="text-white/30 text-sm">271 avis Google</p>
+              <p className="text-white/30 text-sm">{siteConfig.google.reviewCount} avis Google</p>
               <p className="text-white/15 text-xs mt-1">On ne les a pas écrits nous-mêmes.</p>
             </div>
           </div>
