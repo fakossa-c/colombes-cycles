@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Button from "@/components/ui/Button";
+import { siteConfig } from "@/lib/data/site-config";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -101,8 +102,8 @@ export default function Hero() {
           <Button href="/contact" variant="primary">
             Prendre RDV
           </Button>
-          <Button href="/nos-velos" variant="outline-light">
-            Découvrir nos vélos
+          <Button href={`tel:${siteConfig.phoneTel}`} variant="outline-light">
+            Appeler
           </Button>
         </div>
 
@@ -110,9 +111,9 @@ export default function Hero() {
         <div className="hero-badge absolute bottom-10 right-6 md:right-10 hidden md:flex items-center gap-8 text-white/30 text-sm">
           <div className="text-right">
             <span className="block font-syne font-800 text-2xl text-white/70">
-              4,8<span className="text-terracotta">/5</span>
+              {siteConfig.google.rating.toString().replace(".", ",")}<span className="text-terracotta">/5</span>
             </span>
-            <span className="text-[0.65rem] tracking-wider uppercase">271 avis Google</span>
+            <span className="text-[0.65rem] tracking-wider uppercase">{siteConfig.google.reviewCount} avis Google</span>
           </div>
           <div className="w-[1px] h-10 bg-white/10" />
           <div className="text-right">
