@@ -225,3 +225,11 @@ html {
     transition: none !important;
   }
 }
+
+
+/* ===== FOCUS VISIBLE — WCAG 2.1 AA ===== */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
