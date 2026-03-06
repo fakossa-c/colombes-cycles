@@ -38,9 +38,10 @@ export default function MentionsLegalesPage() {
               <p>
                 <strong className="text-anthracite">Colombes Cycles</strong>
               </p>
-              <p>Forme juridique : [A compléter]</p>
-              <p>SIRET : [A compléter]</p>
-              <p>Adresse : Colombes, 92700</p>
+              <p>Forme juridique : SARL — Capital social : 5 000 €</p>
+              <p>SIRET : 818 277 618 00018</p>
+              <p>N° TVA intracommunautaire : FR31 818 277 618</p>
+              <p>Adresse : 12 avenue Henri Barbusse, 92700 Colombes</p>
               <p>Téléphone : 01 42 42 66 02</p>
               <p>Directeur de la publication : David Thibault</p>
             </div>

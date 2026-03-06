@@ -31,5 +31,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/a-propos`, priority: 0.5, changeFrequency: "yearly" },
     { url: `${baseUrl}/contact`, priority: 0.8, changeFrequency: "yearly" },
     { url: `${baseUrl}/blog`, priority: 0.7, changeFrequency: "weekly" },
+    {
+      url: `${baseUrl}/mentions-legales`,
+      priority: 0.3,
+      changeFrequency: "yearly",
+    },
   ];
 }
