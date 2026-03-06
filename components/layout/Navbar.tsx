@@ -101,8 +101,12 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="lg:hidden bg-cream border-t border-anthracite/[0.05] px-6 pb-8">
+      <div
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-cream border-t border-anthracite/[0.05] px-6 pb-8">
           {links.map((link) => (
             <div key={link.href}>
               <Link
@@ -132,7 +136,7 @@ export default function Navbar() {
             Prendre RDV
           </Link>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

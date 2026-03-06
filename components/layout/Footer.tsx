@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { siteConfig } from "@/lib/data/site-config";
 
 export default function Footer() {
   return (
@@ -16,7 +17,7 @@ export default function Footer() {
               COLOMBES<span className="text-terracotta">.</span>CYCLES
             </Link>
             <p className="text-sm leading-relaxed mb-5">
-              Atelier et magasin de vélos à Colombes (92700).
+              Atelier et magasin de vélos à {siteConfig.address.city} ({siteConfig.address.postalCode}).
               <br />
               Vente, réparation, conseil depuis 15 ans.
             </p>
@@ -64,6 +65,7 @@ export default function Footer() {
                 <span>Dimanche – Lundi</span>
                 <span className="text-white/20">Fermé</span>
               </li>
+              <li className="pt-1 text-white/20 text-xs">1ère révision offerte</li>
             </ul>
           </div>
 
@@ -74,12 +76,12 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="tel:0142426602" className="flex items-center gap-2 hover:text-terracotta transition-colors duration-300 font-medium text-white/60">
-                  01 42 42 66 02
+                <a href={`tel:${siteConfig.phoneTel}`} className="flex items-center gap-2 hover:text-terracotta transition-colors duration-300 font-medium text-white/60">
+                  {siteConfig.phone}
                 </a>
               </li>
               <li className="text-white/30">
-                Colombes (92700)
+                {siteConfig.address.city} ({siteConfig.address.postalCode})
               </li>
             </ul>
 
@@ -87,7 +89,7 @@ export default function Footer() {
             <div className="mt-8">
               <p className="text-[0.6rem] font-bold tracking-[0.25em] uppercase text-white/20 mb-2">Nos marques</p>
               <p className="text-xs text-white/25">
-                Orbea · Peugeot Cycles · Gitane · Velodeville · Lombardo · Sparta
+                {siteConfig.brands.join(" · ")}
               </p>
             </div>
           </div>
